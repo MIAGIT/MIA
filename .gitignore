@@ -3,13 +3,23 @@ platforms/android/assets/www
 platforms/android/bin/
 platforms/android/gen/
 platforms/android/res/xml/config.xml
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> 1e9600e7678fd738c66f5820ce30379a2bf7f1bd
 # iOS
 platforms/ios/build/
 platforms/ios/CordovaLib/build/
 platforms/ios/www
 platforms/ios/MyPace/config.xml
 platforms/ios/.staging
+<<<<<<< HEAD
 
 # Emulator logs
 platforms/ios/cordova/console.log
+=======
+ 
+# Emulator logs
+platforms/ios/cordova/console.log
+>>>>>>> 1e9600e7678fd738c66f5820ce30379a2bf7f1bd
