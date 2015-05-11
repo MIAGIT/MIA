@@ -42,7 +42,7 @@
             </div>
             <div id="geolocation"></div>
             <button onclick="window.plugins.toast.showShortBottom('Hello there!')">Helloh?</button>
-            <button onclick=navigator.geolocation.getCurrentPosition(geolocationSuccess)>Location?</button>
+            <button onclick=location()>Location?</button>
         </div>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
@@ -50,6 +50,10 @@
         <script type="text/javascript">
             app.initialize();
 
+            function location() {
+                alert('locationing');
+                navigator.geolocation.getCurrentPosition(geolocationSuccess);
+            }
             function onSuccess(position) {
                 var element = document.getElementById('geolocation');
                 element.innerHTML = 'Latitude: '  + position.coords.latitude      + '<br />' +
