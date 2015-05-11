@@ -41,11 +41,22 @@
                 <p>Awww pigly...</p>
             </div>
             <div id="geolocation"></div>
+            <button onclick="window.plugins.toast.showShortBottom('Hello there!')">Helloh?</button>
+            <button onclick=navigator.geolocation.getCurrentPosition(geolocationSuccess)>Location?</button>
         </div>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="java/nl.xservices.plugins/Toast.js"></script>
         <script type="text/javascript">
             app.initialize();
+
+            function onSuccess(position) {
+                var element = document.getElementById('geolocation');
+                element.innerHTML = 'Latitude: '  + position.coords.latitude      + '<br />' +
+                                    'Longitude: ' + position.coords.longitude     + '<br />' +
+                                    '<hr />'      + element.innerHTML;
+                }
         </script>
+
     </body>
 </html>
