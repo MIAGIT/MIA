@@ -64,7 +64,7 @@ ext {
     }
     // The value for android.buildToolsVersion.
     if (!project.hasProperty('cdvBuildToolsVersion')) {
-        cdvBuildToolsVersion = null;
+        cdvBuildToolsVersion = "22.0.1";
     }
     // Sets the versionCode to the given value.
     if (!project.hasProperty('cdvVersionCode')) {
