@@ -45,10 +45,10 @@
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.phonegap.helloworld"
         },
-        "cordova-plugin-geolocation": {
+        "cordova-plugin-vibration": {
             "PACKAGE_NAME": "com.phonegap.helloworld"
         },
-        "cordova-plugin-vibration": {
+        "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "com.phonegap.helloworld"
         }
     },
