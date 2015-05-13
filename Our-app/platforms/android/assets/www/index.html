@@ -26,66 +26,78 @@
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,500' rel='stylesheet' type='text/css'>
+        <link rel="import" href="https://www.polymer-project.org/0.5/components/paper-ripple/paper-ripple.html">
+        <link rel="import" href="http://www.polymer-project.org/components/core-icons/core-icons.html">
+        <link rel="import" href="http://www.polymer-project.org/components/font-roboto/roboto.html">
         <link rel="stylesheet" type="text/css" href="css/index.css" />
         <title>Hello World</title>
     </head>
     <body>
         <div class="app">
-            <div id="map_canvas"></div>
-            <h1>PhoneGap</h1>
-            <h2>Also yes</h2>
+            <iframe id="maps"
+                    frameborder="0" style="border:0"
+                    src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyCivTdNSJC1KC7fbPhaB3p08zdY5QHsAqU&origin=%20&destination=%20">
+            </iframe>
+            <div id="locationinput">
+                <button class="button raised" onclick="locationGPS(0)">CAR LOCATION
+                    <paper-ripple fit></paper-ripple></button>
+                <button class="button raised" onclick="locationGPS(1)">NAVIGATION
+                    <paper-ripple fit></paper-ripple></button>
+                <button class="button raised" onclick="parkAPI()">API TEST
+                    <paper-ripple fit></paper-ripple></button>
+                <button class="button raised" onclick="navigator.vibrate([200, 100, 200]);">VIBRATE
+                    <paper-ripple fit></paper-ripple></button>
+            </div>
+            <iframe id="APItest" frameborder="0" style="border:0"></iframe>
             <div id="deviceready" class="blink">
                 <p class="event listening">Connecting to Device</p>
                 <p class="event received">Device is Ready</p>
             </div>
-            <div id="jemoeder">
-                <p>Awww pigly...</p>
-            </div>
-            <div id="geolocation"></div>
-            <button onclick="window.plugins.toast.showShortBottom('Hello there!')">Helloh?</button>
-            <button onclick="locationGPS()">Location?</button>
         </div>
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
-        <script src="https://maps.googleapis.com/maps/api/js"></script>
         <script type="text/javascript">
-            app.initialize();
-            function initialize() {
-                var mapCanvas = document.getElementById('map_canvas');
-                var mapOptions = {
-                    center: new google.maps.LatLng(44.5403, -78.5463),
-                    zoom: 8,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
-                }
-                var map = new google.maps.Map(mapCanvas, mapOptions)
-            }
-            google.maps.event.addDomListener(window, 'load', initialize);
 
-            function locationGPS() {
-                window.plugins.toast.showShortBottom('location!');
+            var APIkey = 'AIzaSyCivTdNSJC1KC7fbPhaB3p08zdY5QHsAqU';
+            var latCar;
+            var lngCar;
+            var locationSet = false;
+            var lat;
+            var lng;
+
+            function locationGPS(mode) {
+                window.plugins.toast.showShortBottom('GPS');
 
                 var onSuccess = function(position) {
-                    alert('Latitude: '          + position.coords.latitude + '\n' +
-                          'Longitude: '         + position.coords.longitude );
+                    lat = position.coords.latitude;
+                    lng = position.coords.longitude;
 
-                    var mapCanvas = document.getElementById('map_canvas');
-                    var mapOptions = {
-                        center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
-                        zoom: 12,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    if (mode == 0){
+                        latCar=lat;
+                        lngCar=lng;
+                        locationSet = true;
+                        window.plugins.toast.showShortBottom('Location set!');
+                    } else if (mode == 1 && locationSet) {
+                        document.getElementById('maps').src = "https://www.google.com/maps/embed/v1/directions?key="+ APIkey+ "&origin="+ lat +","+ lng+ "&destination="+ latCar+","+ lngCar+ "&mode=walking";
+                    } else {
+                        alert('You did not set your cars location');
                     }
-                    var map = new google.maps.Map(mapCanvas, mapOptions)
-                    google.maps.event.addDomListener(window, 'load', initialize);
+
                 };
 
                 function onError(error) {
                     alert('code: '    + error.code    + '\n' +
                           'message: ' + error.message + '\n');
                 }
-
                 navigator.geolocation.getCurrentPosition(onSuccess, onError);
             }
+
+            function parkAPI() {
+                document.getElementById('APItest').src = "http://divvapi.parkshark.nl/apitest.jsp?action=plan&to_lat=51.5&to_lon=4.9&dd=28&mm=12&yy=2013&h=12&m=50&dur=2&opt_routes=y&opt_routes_ret=n&opt_am=n&opt_rec=y";
+            }
+
+            app.initialize();
         </script>
 
     </body>
