@@ -23,6 +23,20 @@ module.exports = [
     {
         "file": "plugins/nl.x-services.plugins.toast/test/tests.js",
         "id": "nl.x-services.plugins.toast.tests"
+    },
+    {
+        "file": "plugins/org.apache.cordova.dialogs/www/notification.js",
+        "id": "org.apache.cordova.dialogs.notification",
+        "merges": [
+            "navigator.notification"
+        ]
+    },
+    {
+        "file": "plugins/org.apache.cordova.dialogs/www/android/notification.js",
+        "id": "org.apache.cordova.dialogs.notification_android",
+        "merges": [
+            "navigator.notification"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -31,7 +45,8 @@ module.exports.metadata =
     "cordova-plugin-whitelist": "1.0.1-dev",
     "cordova-plugin-vibration": "1.0.0",
     "cordova-plugin-geolocation": "1.0.0",
-    "nl.x-services.plugins.toast": "2.0.5"
+    "nl.x-services.plugins.toast": "2.0.5",
+    "org.apache.cordova.dialogs": "0.3.0"
 }
 // BOTTOM OF METADATA
 });
