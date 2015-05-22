@@ -34,29 +34,69 @@ Phonon.Navigator({
 });
 
 
-// Navigation Test (Synchronous)
+// Navigation Handler
+//Home (Synchronous)
 Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, function(activity) {
 
     activity.onCreate(function(self, el, req) {
-        window.plugins.toast.showShortBottom('Create!');
     });
 
     activity.onReady(function(self, el, req) {
-        window.plugins.toast.showShortBottom('Ready!');
+            locationGPS(0);
     });
 
     activity.onTransitionEnd(function() {
-        window.plugins.toast.showShortBottom('Transition ended!!');
     });
 
     activity.onQuit(function(self) {
-        window.plugins.toast.showShortBottom('Quit!');
     });
 
     activity.onHidden(function(el) {
-        window.plugins.toast.showShortBottom("I'm hidden!");
+        //locationGPS(0);
     });
 });
+
+//Overview (Synchronous)
+Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: false}, function(activity) {
+
+    activity.onCreate(function(self, el, req) {
+    });
+
+    activity.onReady(function(self, el, req) {
+    });
+
+    activity.onTransitionEnd(function() {
+    });
+
+    activity.onQuit(function(self) {
+    });
+
+    activity.onHidden(function(el) {
+    });
+});
+
+//Navigate (Synchronous)
+Phonon.Navigator().on({page: 'navigate', template: 'navigate', asynchronous: false}, function(activity) {
+
+    activity.onCreate(function(self, el, req) {
+    });
+
+    activity.onReady(function(self, el, req) {
+        locationGPS(1);
+    });
+
+    activity.onTransitionEnd(function() {
+    });
+
+    activity.onQuit(function(self) {
+    });
+
+    activity.onHidden(function(el) {
+    });
+});
+
+
+//Fucntions
 
 var APIkey = 'AIzaSyCivTdNSJC1KC7fbPhaB3p08zdY5QHsAqU';
 var latCar;
@@ -80,14 +120,12 @@ function locationGPS(mode) {
         } else if (mode == 1 && locationSet) {
             document.getElementById('maps').src = "https://www.google.com/maps/embed/v1/directions?key="+ APIkey+ "&origin="+ lat +","+ lng+ "&destination="+ latCar+","+ lngCar+ "&mode=walking";
         } else {
-            alert('You did not set your cars location');
+            alert('Car location unavailable');
         }
-
     };
 
     function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
+        window.plugins.toast.showShortBottom('GPS Error');
     }
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
 }
@@ -96,6 +134,20 @@ function parkAPI() {
     document.getElementById('APItest').src = "http://divvapi.parkshark.nl/apitest.jsp?action=plan&to_lat=51.5&to_lon=4.9&dd=28&mm=12&yy=2013&h=12&m=50&dur=2&opt_routes=y&opt_routes_ret=n&opt_am=n&opt_rec=y";
 }
 
+function vibrate() {
+    navigator.vibrate([200, 100, 200]);
+}
+
+function notification() {
+    navigator.notification.confirm(
+        'Also yes', 		// message
+        'onConfirm',        // callback to invoke with index of button pressed
+        'Mahp',         	// title
+        ['Either','Neighter']  // buttonLabels
+    )
+}
+
+//App variable
 var app = {
     // Application Constructor
     initialize: function() {

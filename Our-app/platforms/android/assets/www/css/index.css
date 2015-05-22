@@ -116,7 +116,7 @@ h1 {
 }
 
 #maps {
-    height: 256px;
+    height: 100%;
     width:100%;
 }
 
@@ -159,4 +159,12 @@ p {
 .button > paper-ripple {
   border-radius: 2px;
   overflow: hidden;
+}
+
+label {
+    float: left;
+}
+
+.info h1 {
+    margin:32px;
 }

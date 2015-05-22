@@ -1,31 +1,22 @@
 <header class="header-bar">
     <h1 class="title">Home</h1>
 </header>
-<div class="content">
-	<iframe id="maps"
-			frameborder="0" style="border:0"
-			src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyCivTdNSJC1KC7fbPhaB3p08zdY5QHsAqU&origin=%20&destination=%20">
-	</iframe>
-	<div id="locationinput">
-		<button class="button raised" onclick="locationGPS(0)">CAR LOCATION
-			<paper-ripple fit></paper-ripple></button>
-		<button class="button raised" onclick="locationGPS(1)">NAVIGATION
-			<paper-ripple fit></paper-ripple></button>
-		<button class="button raised" onclick="parkAPI()">API TEST
-			<paper-ripple fit></paper-ripple></button>
-		<button class="button raised" onclick="navigator.vibrate([200, 100, 200]);">VIBRATE
-			<paper-ripple fit></paper-ripple></button>
-		<button class="button raised" onclick="navigator.notification.confirm(
-    'Also yes', 		// message
-    'onConfirm',        // callback to invoke with index of button pressed
-    'Mahp',         	// title
-    ['Either','Neighter']  // buttonLabels
-);">Notification
-			<paper-ripple fit></paper-ripple></button>
+<div class="content content-padded">
+	<div class="form-group">
+		<label>Limiet</label>
+		<input type="text" placeholder="&#8364;10,-">
 	</div>
+	<div class="form-group">
+		<label>Vanaf</label>
+		<input type="text" placeholder="Nu">
+	</div>
+	<div class="form-group">
+		<label>Waar</label>
+		<input type="text" placeholder="Mathildelaan">
+	</div>
+	<a href="#!overview"><button class="button raised" onclick="">Parkeer
+			<paper-ripple fit></paper-ripple></button></a>
+	<button class="button raised" onclick="parkAPI()">API TEST
+		<paper-ripple fit></paper-ripple></button>
 	<iframe id="APItest" frameborder="0" style="border:0"></iframe>
-	<div id="deviceready" class="blink">
-		<p class="event listening">Connecting to Device</p>
-		<p class="event received">Device is Ready</p>
-	</div>
 </div>
