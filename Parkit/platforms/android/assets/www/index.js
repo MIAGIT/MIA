@@ -16,6 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+//update bool
+var update = false;
+window.setInterval(function(){
+  if(update){overviewUpdate();}
+}, 1000);
 
 window.addEventListener('load', function() {
     new FastClick(document.body);
@@ -64,6 +69,7 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
 
     activity.onReady(function(self, el, req) {
         overviewUpdate();
+        update = true;
     });
 
     activity.onTransitionEnd(function() {
@@ -73,6 +79,7 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
     });
 
     activity.onHidden(function(el) {
+        update = false;
     });
 });
 
@@ -116,6 +123,7 @@ var start;
 var elapsed;
 var costNow;
 var timeLeft;
+var notified = false;
 
 function locationGPS(mode) {
     window.plugins.toast.showShortBottom('GPS');
@@ -161,35 +169,39 @@ function overviewUpdate() {
     //Tijd over
     var costLeft = budget - costNow;
     timeLeft = (costLeft/costPerMin)*60*1000;
-    document.getElementById('timeleft').innerHTML=Math.floor(msToTime(timeLeft));
+    document.getElementById('timeleft').innerHTML=msToTime(timeLeft);
+    
+    //notification
+    if(timeLeft <600000 && !notified)
+    {
+        notification();
+        notified = true;
+    }
 }
 
 function parkAPI() {
     document.getElementById('APItest').src = "http://divvapi.parkshark.nl/apitest.jsp?action=plan&to_lat=51.5&to_lon=4.9&dd=28&mm=12&yy=2013&h=12&m=50&dur=2&opt_routes=y&opt_routes_ret=n&opt_am=n&opt_rec=y";
 }
 
-function vibrate() {
-    navigator.vibrate([200, 100, 200]);
-}
-
 function notification() {
+    navigator.vibrate([200, 100, 200]);
     navigator.notification.confirm(
-        'Also yes', 		// message
-        'onConfirm',        // callback to invoke with index of button pressed
-        'Mahp',         	// title
-        ['Either','Neighter']  // buttonLabels
-    )
+        'Om binnen budget te blijven moet je nu terug naar de auto',  // message
+        'onConfirm',          // callback to invoke with index of button pressed
+        'Klaar om te gaan?',                                    	// title
+        ['Navigatie','Ok']                                       // buttonLabels
+    );
 }
 
 function msToTime(s) {
-  var ms = s % 1000;
-  s = (s - ms) / 1000;
-  var secs = s % 60;
-  s = (s - secs) / 60;
-  var mins = s % 60;
-  var hrs = (s - mins) / 60;
+    var ms = s % 1000;
+    s = (s - ms) / 1000;
+    var secs = s % 60;
+    s = (s - secs) / 60;
+    var mins = s % 60;
+    var hrs = (s - mins) / 60;
 
-  return hrs + ':' + mins + ':' + secs + '.' + ms;
+    return (hrs < 10 ? "0" + hrs : hrs) + ':' + (mins < 10 ? "0" + mins : mins) + ':' + (secs  < 10 ? "0" + secs : secs);
 }
 
 //App variable
