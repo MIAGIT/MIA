@@ -13,21 +13,21 @@ The used plugins are:
 - Toast
 - Dialogs
 
-###Geolocation
+####Geolocation
 The GPS is used to give the users directions, and can be used to calculate the time it takes to go back to the car. This is used to give the user a heads-up that he/she needs to go back.
 
-###Vibration
+####Vibration
 Temporary used for debugging purposes.
 
-###Toast
+####Toast
 Gives the users information about the things happening, and is used in error handling.
 
-###Dialogs
+####Dialogs
 For the notification, giving the user the option 'OK' or to the navigation.
 
 ##External services
-###Google Maps
+####Google Maps
 For navigation purposes
 
-###divvapi.parkshark
+####divvapi.parkshark
 --Upcoming--
