@@ -37,6 +37,21 @@ module.exports = [
         "merges": [
             "navigator.notification"
         ]
+    },
+    {
+        "file": "plugins/de.appplant.cordova.plugin.background-mode/www/background-mode.js",
+        "id": "de.appplant.cordova.plugin.background-mode.BackgroundMode",
+        "clobbers": [
+            "cordova.plugins.backgroundMode",
+            "plugin.backgroundMode"
+        ]
+    },
+    {
+        "file": "plugins/org.apache.cordova.device/www/device.js",
+        "id": "org.apache.cordova.device.device",
+        "clobbers": [
+            "device"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -46,7 +61,9 @@ module.exports.metadata =
     "org.apache.cordova.vibration": "0.3.13",
     "org.apache.cordova.geolocation": "0.3.12",
     "nl.x-services.plugins.toast": "2.0.6",
-    "org.apache.cordova.dialogs": "0.3.0"
+    "org.apache.cordova.dialogs": "0.3.0",
+    "de.appplant.cordova.plugin.background-mode": "0.6.4",
+    "org.apache.cordova.device": "0.3.0"
 }
 // BOTTOM OF METADATA
 });

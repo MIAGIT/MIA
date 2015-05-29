@@ -1,34 +1,26 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-//update bool
+//--update stuff--//
 var update = false;
 window.setInterval(function(){
-  if(update){overviewUpdate();}
+  if(update)
+    {
+        if(overviewUpdate())
+        {
+            navigator.vibrate([200, 100, 200]);
+            cordova.plugins.backgroundMode.configure({
+                text:'Om binnen budget te blijven moet je nu terug naar de auto'
+            });
+        }
+    }
 }, 1000);
 
+//--starting stuff--//
 window.addEventListener('load', function() {
     new FastClick(document.body);
 }, false);
 
 var onDeviceReady = function () {
 	Phonon.Navigator().start('home');
-}
+};
 
 document.addEventListener('deviceready', onDeviceReady, false);
 
@@ -38,8 +30,27 @@ Phonon.Navigator({
     pageAnimations: true
 });
 
+//--running in the background stuff--//
+/*document.addEventListener('deviceready', function () {
+    // Called when background mode has been activated
+    cordova.plugins.backgroundMode.onactivate = function () {
+        if(overviewUpdate()){
+            navigator.vibrate([200, 100, 200]);
+            cordova.plugins.backgroundMode.configure({
+                //silent: false,
+                text:'Om binnen budget te blijven moet je nu terug naar de auto'
+            });
+        }
+        /*setTimeout(function () {
+            // Modify the currently displayed notification
+            cordova.plugins.backgroundMode.configure({
+                text:'Running in background for more than 5s now.'
+            });
+        }, 5000);* /
+    };
+}, false);*/
 
-// Navigation Handler
+//--Navigation Handler--//
 //Home (Synchronous)
 Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, function(activity) {
 
@@ -47,7 +58,9 @@ Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, fun
     });
 
     activity.onReady(function(self, el, req) {
-            locationGPS(0);
+        cordova.plugins.backgroundMode.disable();
+        locationGPS(0);
+        update = false;
     });
 
     activity.onTransitionEnd(function() {
@@ -57,7 +70,7 @@ Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, fun
     });
 
     activity.onHidden(function(el) {
-        //locationGPS(0);
+        
     });
 });
 
@@ -68,6 +81,7 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
     });
 
     activity.onReady(function(self, el, req) {
+        cordova.plugins.backgroundMode.enable();
         overviewUpdate();
         update = true;
     });
@@ -79,7 +93,7 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
     });
 
     activity.onHidden(function(el) {
-        update = false;
+        
     });
 });
 
@@ -160,23 +174,32 @@ function park() {
 }
 
 function overviewUpdate() {
-    //Kosten nu
+    //Cost now
     elapsed = new Date - start;
     var elapsedMin = (elapsed/1000)/60;
     costNow = elapsedMin*costPerMin;
     document.getElementById('costs').innerHTML='&#8364;'+costNow.toFixed(2);
     
-    //Tijd over
+    //Time left
     var costLeft = budget - costNow;
     timeLeft = (costLeft/costPerMin)*60*1000;
-    document.getElementById('timeleft').innerHTML=msToTime(timeLeft);
+    if (timeLeft > 0){ //stop when the time is up
+        document.getElementById('timeleft').innerHTML=msToTime(timeLeft);
+    }
     
     //notification
     if(timeLeft <600000 && !notified)
     {
         notification();
         notified = true;
+        return true;
     }
+    
+    // Set the notification message
+    cordova.plugins.backgroundMode.setDefaults({
+        title:  'ParkIt',
+        text: 'Je staat geparkeerd op de Mathildelaan'
+    });
 }
 
 function parkAPI() {
