@@ -165,8 +165,16 @@ function locationGPS(mode) {
 }
 
 function park() {
+    var startInput = new Date(document.getElementById('tijdInput').value);
     start = new Date();
+    if (startInput !== start){
+        start = startInput;
+    }
     budget = document.getElementById('limietInput').value;
+    if (isNaN(budget)) {
+        window.plugins.toast.showShortBottom('Fout in invoer, laatst gebruikte limiet ingesteld');
+        budget = 10; //set this to last val
+    }
     if (budget == ''){budget=10;}//set this to last val
     cost = 5.0;
     costRate = 60;

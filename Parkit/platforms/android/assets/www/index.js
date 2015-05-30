@@ -165,8 +165,13 @@ function locationGPS(mode) {
 }
 
 function park() {
+    start = document.getElementById('limietInput').value;
     start = new Date();
     budget = document.getElementById('limietInput').value;
+    if (isNaN(budget)) {
+        window.plugins.toast.showShortBottom('Fout in invoer, laatst gebruikte limiet ingesteld');
+        budget = 10; //set this to last val
+    }
     if (budget == ''){budget=10;}//set this to last val
     cost = 5.0;
     costRate = 60;
