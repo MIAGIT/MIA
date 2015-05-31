@@ -110,3 +110,8 @@ header h1 {
 #row_input_home1 > form {
     padding-top: 10px;
 }
+#tijdPlaceholder {
+    position: relative;
+    top: -48px;
+    color: lightgray;
+}

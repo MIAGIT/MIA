@@ -72,7 +72,6 @@ Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, fun
 
     activity.onReady(function(self, el, req) {
         cordova.plugins.backgroundMode.disable();
-        dateInput();
         locationGPS(0);
         update = false;
         notified = false;
@@ -181,10 +180,13 @@ function locationGPS(mode) {
 
 function park() {
     var startInput = document.getElementById('tijdInput').value;
-    start = new Date();
-    if (startInput !== start){
-        start = startInput;
+    if(startInput !== '') {
+        start = new Date(startInput);
+        start.setHours(start.getHours()-2);  
+    } else {
+        start = new Date();
     }
+
     budget = document.getElementById('limietInput').value;
     if (isNaN(budget)) {
         window.plugins.toast.showShortBottom('Fout in invoer, laatst gebruikte limiet ingesteld');
@@ -257,17 +259,6 @@ function msToTime(s) {
 }
 
 function dateInput() {
-    alert('date');
     var d = new Date();
-    document.getElementById('tijdInput').value = d.getFullYear()+"-"
-            +zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d.getDate())+"T"
-            +d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
-    //document.getElementById('tijdInput').value = new Date().toDateInputValue();
-}
-
-function zeroPadded(val) {
-  if (val >= 10)
-    return val;
-  else
-    return '0' + val;
+    document.getElementById('tijdPlaceholder').style.visibility = 'hidden';
 }
