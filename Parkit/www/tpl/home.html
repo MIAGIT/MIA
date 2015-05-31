@@ -1,22 +1,67 @@
 <header class="header-bar">
-    <h1 class="title">Home</h1>
+    <h1 class="title">Parkit</h1>
 </header>
 <div class="content content-padded">
-	<div class="form-group">
-		<label>Limiet</label>
-		<input type="number" id='limietInput' placeholder="&#8364;10,-">
-	</div>
-	<div class="form-group">
-		<label>Vanaf</label>
-		<input type="datetime-local" id='tijdInput' value="Nu">
-	</div>
-	<div class="form-group">
-		<label>Waar</label>
-		<input type="text" placeholder="Mathildelaan">
-	</div>
-	<a href="#!overview"><button class="button raised" onclick="park()">Parkeer
-			<paper-ripple fit></paper-ripple></button></a>
-	<button class="button raised" onclick="parkAPI()">API TEST
-		<paper-ripple fit></paper-ripple></button>
-	<iframe id="APItest" frameborder="0" style="border:0"></iframe>
+    
+    <p class="flow-text grey-text text-darken-2" id="hometext">Voer eenvoudig je limiet, plaats en tijd in en betaal niet te veel bij de parkeergarage.
+    </p>   
+
+    <div class="row" id="row_input_home1">
+        <form class="col s12">
+            <div class="row">
+                <div class="input-field col">
+                    <span class="input-label">Limiet &#8364</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col">
+                    <span class="input-label">Vanaf</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col">
+                    <span class="input-label"><i class="mdi-maps-local-parking"></i></span>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="row" id="row_input_home2">
+        <form class="col s12">
+            <div class="row">
+                <div class="input-field col">
+                    <input placeholder="10" id='limietInput' type="tel" class="validate">
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col">
+                    <input value="nu" id='tijdInput' type="datetime-local" class="validate">
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col">
+                    <input placeholder="Mathildelaan" id='waarInput' type="text" class="validate">
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!--<div class="form-group">
+            <label>Limiet</label>
+            <input type="number" id='limietInput' placeholder="&#8364;10,-">
+    </div>
+    <div class="form-group">
+            <label>Vanaf</label>
+            <input type="datetime-local" id='tijdInput' value="nu">
+    </div>
+    <div class="form-group">
+            <label>Waar</label>
+            <input type="text" placeholder="Mathildelaan">
+    </div>-->
+    <a href="#!overview">
+        <button class="waves-effect waves-light blue btn" id="btn_park" onclick="park()">Parkeer</button>
+    </a>
+    <button class="waves-effect waves-light blue btn" id="btn_TEST" onclick="parkAPI()">API TEST</button>
+
+    <iframe id="APItest" frameborder="0" style="border:0"></iframe>
 </div>

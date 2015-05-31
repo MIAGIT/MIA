@@ -1,3 +1,36 @@
+//App variable
+var app = {
+    // Application Constructor
+    initialize: function() {
+        this.bindEvents();
+    },
+    // Bind Event Listeners
+    //
+    // Bind any events that are required on startup. Common events are:
+    // 'load', 'deviceready', 'offline', and 'online'.
+    bindEvents: function() {
+        document.addEventListener('deviceready', this.onDeviceReady, false);
+    },
+    // deviceready Event Handler
+    //
+    // The scope of 'this' is the event. In order to call the 'receivedEvent'
+    // function, we must explicitly call 'app.receivedEvent(...);'
+    onDeviceReady: function() {
+        app.receivedEvent('deviceready');
+    },
+    // Update DOM on a Received Event
+    receivedEvent: function(id) {
+        var parentElement = document.getElementById(id);
+        var listeningElement = parentElement.querySelector('.listening');
+        var receivedElement = parentElement.querySelector('.received');
+
+        listeningElement.setAttribute('style', 'display:none;');
+        receivedElement.setAttribute('style', 'display:block;');
+
+        console.log('Received Event: ' + id);
+    }
+};
+
 //--update stuff--//
 var update = false;
 window.setInterval(function(){
@@ -30,26 +63,6 @@ Phonon.Navigator({
     pageAnimations: true
 });
 
-//--running in the background stuff--//
-/*document.addEventListener('deviceready', function () {
-    // Called when background mode has been activated
-    cordova.plugins.backgroundMode.onactivate = function () {
-        if(overviewUpdate()){
-            navigator.vibrate([200, 100, 200]);
-            cordova.plugins.backgroundMode.configure({
-                //silent: false,
-                text:'Om binnen budget te blijven moet je nu terug naar de auto'
-            });
-        }
-        /*setTimeout(function () {
-            // Modify the currently displayed notification
-            cordova.plugins.backgroundMode.configure({
-                text:'Running in background for more than 5s now.'
-            });
-        }, 5000);* /
-    };
-}, false);*/
-
 //--Navigation Handler--//
 //Home (Synchronous)
 Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, function(activity) {
@@ -59,8 +72,10 @@ Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, fun
 
     activity.onReady(function(self, el, req) {
         cordova.plugins.backgroundMode.disable();
+        dateInput();
         locationGPS(0);
         update = false;
+        notified = false;
     });
 
     activity.onTransitionEnd(function() {
@@ -128,7 +143,7 @@ var locationSet = false;
 var lat;
 var lng;
 
-//kosten vars
+//cost & time vars
 var budget;
 var cost;
 var costRate;
@@ -165,7 +180,7 @@ function locationGPS(mode) {
 }
 
 function park() {
-    var startInput = new Date(document.getElementById('tijdInput').value);
+    var startInput = document.getElementById('tijdInput').value;
     start = new Date();
     if (startInput !== start){
         start = startInput;
@@ -183,7 +198,7 @@ function park() {
 
 function overviewUpdate() {
     //Cost now
-    elapsed = new Date - start;
+    elapsed = new Date() - start;
     var elapsedMin = (elapsed/1000)/60;
     costNow = elapsedMin*costPerMin;
     document.getElementById('costs').innerHTML='&#8364;'+costNow.toFixed(2);
@@ -214,11 +229,17 @@ function parkAPI() {
     document.getElementById('APItest').src = "http://divvapi.parkshark.nl/apitest.jsp?action=plan&to_lat=51.5&to_lon=4.9&dd=28&mm=12&yy=2013&h=12&m=50&dur=2&opt_routes=y&opt_routes_ret=n&opt_am=n&opt_rec=y";
 }
 
+function dialogInput(buttonIndex) {
+    if(buttonIndex === 1){
+        Phonon.Navigator().changePage('navigate');
+    }
+}
+
 function notification() {
     navigator.vibrate([200, 100, 200]);
     navigator.notification.confirm(
         'Om binnen budget te blijven moet je nu terug naar de auto',  // message
-        'onConfirm',          // callback to invoke with index of button pressed
+        dialogInput,          // callback to invoke with index of button pressed
         'Klaar om te gaan?',                                    	// title
         ['Navigatie','Ok']                                       // buttonLabels
     );
@@ -235,35 +256,18 @@ function msToTime(s) {
     return (hrs < 10 ? "0" + hrs : hrs) + ':' + (mins < 10 ? "0" + mins : mins) + ':' + (secs  < 10 ? "0" + secs : secs);
 }
 
-//App variable
-var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+function dateInput() {
+    alert('date');
+    var d = new Date();
+    document.getElementById('tijdInput').value = d.getFullYear()+"-"
+            +zeroPadded(d.getMonth() + 1)+"-"+zeroPadded(d.getDate())+"T"
+            +d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
+    //document.getElementById('tijdInput').value = new Date().toDateInputValue();
+}
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
-    }
-};
+function zeroPadded(val) {
+  if (val >= 10)
+    return val;
+  else
+    return '0' + val;
+}
