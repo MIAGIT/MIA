@@ -95,9 +95,9 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
     });
 
     activity.onReady(function(self, el, req) {
-        cordova.plugins.backgroundMode.enable();
-        overviewUpdate();
-        update = true;
+            cordova.plugins.backgroundMode.enable();
+            overviewUpdate();
+            update = true;
     });
 
     activity.onTransitionEnd(function() {
@@ -154,8 +154,7 @@ var timeLeft;
 var notified = false;
 
 function locationGPS(mode) {
-    window.plugins.toast.showShortBottom('GPS');
-
+    
     var onSuccess = function(position) {
         lat = position.coords.latitude;
         lng = position.coords.longitude;
@@ -168,7 +167,12 @@ function locationGPS(mode) {
         } else if (mode == 1 && locationSet) {
             document.getElementById('maps').src = "https://www.google.com/maps/embed/v1/directions?key="+ APIkey+ "&origin="+ lat +","+ lng+ "&destination="+ latCar+","+ lngCar+ "&mode=walking";
         } else {
-            alert('Car location unavailable');
+            navigator.notification.confirm(
+                'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals',// message
+                GPSError,     // callback to invoke with index of button pressed
+                'GPS Fout',                                          	// title
+                ['OK']                                           // buttonLabels
+            );
         }
     };
 
@@ -176,6 +180,10 @@ function locationGPS(mode) {
         window.plugins.toast.showShortBottom('GPS Error');
     }
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
+}
+
+function GPSError(){
+    Phonon.Navigator().changePage('home');
 }
 
 function park() {
@@ -208,9 +216,10 @@ function overviewUpdate() {
     //Time left
     var costLeft = budget - costNow;
     timeLeft = (costLeft/costPerMin)*60*1000;
-    if (timeLeft > 0){ //stop when the time is up
-        document.getElementById('timeleft').innerHTML=msToTime(timeLeft);
+    if (timeLeft <= 0){ //prevent negative time
+        timeLeft = 0;
     }
+    document.getElementById('timeleft').innerHTML=msToTime(timeLeft);
     
     //notification
     if(timeLeft <600000 && !notified)
@@ -239,6 +248,7 @@ function dialogInput(buttonIndex) {
 
 function notification() {
     navigator.vibrate([200, 100, 200]);
+    navigator.notification.beep(1);
     navigator.notification.confirm(
         'Om binnen budget te blijven moet je nu terug naar de auto',  // message
         dialogInput,          // callback to invoke with index of button pressed

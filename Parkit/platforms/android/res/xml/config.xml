@@ -31,6 +31,8 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
+    <access origin="http://maps.google.com" />
+    <access origin="http://divvapi.parkshark.nl/*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
