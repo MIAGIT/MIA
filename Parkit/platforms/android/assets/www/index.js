@@ -33,18 +33,25 @@ var app = {
 
 //--update stuff--//
 var update = false;
+//overview update
 window.setInterval(function(){
   if(update)
     {
-        if(overviewUpdate())
-        {
-            navigator.vibrate([200, 100, 200]);
+        if(overviewUpdate()){ //returns true when time is up
             cordova.plugins.backgroundMode.configure({
                 text:'Om binnen budget te blijven moet je nu terug naar de auto'
             });
         }
     }
 }, 1000);
+
+//traveltime update
+window.setInterval(function(){
+  if(update)
+    {
+        travelTimeUpdate();
+    }
+}, 6000);
 
 //--starting stuff--//
 window.addEventListener('load', function() {
@@ -141,6 +148,7 @@ var lngCar;
 var locationSet = false;
 var lat;
 var lng;
+var travelTime;
 
 //cost & time vars
 var budget;
@@ -151,7 +159,9 @@ var start;
 var elapsed;
 var costNow;
 var timeLeft;
+var timeTolerance = 420; //time in secs
 var notified = false;
+var parkingName;
 
 function locationGPS(mode) {
     window.plugins.toast.showLongBottom('Jouw positie bepalen...');
@@ -222,7 +232,7 @@ function overviewUpdate() {
     document.getElementById('timeleft').innerHTML=msToTime(timeLeft);
     
     //notification
-    if(timeLeft <600000 && !notified)
+    if(timeLeft <travelTime && !notified)
     {
         notification();
         notified = true;
@@ -232,30 +242,43 @@ function overviewUpdate() {
     // Set the notification message
     cordova.plugins.backgroundMode.setDefaults({
         title:  'ParkIt',
-        text: 'Je staat geparkeerd op de Mathildelaan'
+        text: 'Je staat geparkeerd bij: ' + parkingName
+    });
+}
+
+function travelTimeUpdate() {
+    var timeUrl = 'https://maps.googleapis.com/maps/api/distancematrix/json?key=AIzaSyCivTdNSJC1KC7fbPhaB3p08zdY5QHsAqU&origins='
+                    +lat+","+lng+"&destinations="+latCar+","+lngCar+"&mode=walking";
+
+    $.getJSON(timeUrl).done(function(json) {
+        travelTime = (json.rows[0].elements[0].duration.value+timeTolerance)*1000;
     });
 }
 
 function parkAPI() {
     //test w parking meter
-    //lat = 52.3762398;
-    //lng = 4.91645;
+    lat = 52.3762398;
+    lng = 4.91645;
+    
+    //test notificationtiming
+    latCar = 52.372463;
+    lngCar = 4.919640;
+    
+    var garageURL;
     var d = new Date();
     var month = d.getMonth()+1;
     var APIUrl = "http://divvapi.parkshark.nl/apitest.jsp?action=plan&to_lat="+lat+
             "&to_lon="+lng+"&dd="+d.getDate()+"&mm="+month+"&yy="+d.getFullYear()+
             "&h="+d.getHours()+"&m="+d.getMinutes()+"&dur=1&opt_routes=n&opt_routes_ret=n&opt_am=n&opt_rec=y";
-    //document.getElementById('APItest').src = APIUrl;
-    var garageURL;
 
     $.getJSON(APIUrl).done(function(json) {
         var isGarage;
         var id;
         if (json.result.reccommendations[0].name){isGarage = true;}
-        else{isGarage = false}
+        else{isGarage = false;}
         
         if (!isGarage){
-            document.getElementById('waarInput').placeholder = json.result.reccommendations[0].address;
+            parkingName = json.result.reccommendations[0].address;
             id = json.result.reccommendations[0].automat_number;
             garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-meter-by-automat-number&id=" + id;
             $.getJSON(garageURL).done(function(json) {
@@ -264,7 +287,7 @@ function parkAPI() {
                 costPerMin = cost/costRate;
             });
         } else {
-            document.getElementById('waarInput').placeholder = json.result.reccommendations[0].name;
+            parkingName = json.result.reccommendations[0].name;
             id = json.result.reccommendations[0].garageid;
             garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-garage-by-id&id=" + id;
             $.getJSON(garageURL).done(function(json) {
@@ -273,6 +296,7 @@ function parkAPI() {
                 costPerMin = cost/costRate;
             });
         }
+        document.getElementById('waarInput').placeholder = parkingName;
     });
 }
 
@@ -305,6 +329,5 @@ function msToTime(s) {
 }
 
 function dateInput() {
-    var d = new Date();
     document.getElementById('tijdPlaceholder').style.visibility = 'hidden';
 }
