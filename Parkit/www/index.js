@@ -63,6 +63,7 @@ var onDeviceReady = function () {
 };
 
 document.addEventListener('deviceready', onDeviceReady, false);
+document.addEventListener("backbutton", onBackKeyDown, false);
 
 Phonon.Navigator({
     defaultPage: 'home',
@@ -71,6 +72,8 @@ Phonon.Navigator({
 });
 
 //--Navigation Handler--//
+//can the user use the back button?
+var backEnable;
 //Home (Synchronous)
 Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, function(activity) {
 
@@ -82,6 +85,9 @@ Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, fun
         locationGPS(0);
         update = false;
         notified = false;
+        locationSet = false;
+        travelTime = null;
+        backEnable = false;
     });
 
     activity.onTransitionEnd(function() {
@@ -105,6 +111,7 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
             cordova.plugins.backgroundMode.enable();
             overviewUpdate();
             update = true;
+            backEnable = true;
     });
 
     activity.onTransitionEnd(function() {
@@ -138,6 +145,11 @@ Phonon.Navigator().on({page: 'navigate', template: 'navigate', asynchronous: fal
     });
 });
 
+function onBackKeyDown() {
+    if (backEnable){
+        Phonon.Navigator().changePage(getPreviousPage());
+    }
+}
 
 //--FUNCTIONS--//
 
@@ -199,21 +211,20 @@ function GPSError(){
 }
 
 function park() {
-    var startInput = document.getElementById('tijdInput').value;
-    
-    if(startInput !== '') {
-        start = new Date(startInput);
-        start.setHours(start.getHours()-2);  
+    if(validateLimiet()){
+        var startInput = document.getElementById('tijdInput').value;
+        if(startInput !== '') {
+            start = new Date(startInput);
+            start.setHours(start.getHours()-2);  
+        } else {
+            start = new Date();
+        }
+
+        Phonon.Navigator().changePage('overview');
     } else {
-        start = new Date();
+        var msg = 'Geef een getal tussen 0 en 999 in, op maximaal 2 decimalen';
+            window.plugins.toast.showLongBottom(msg);
     }
-    
-    budget = document.getElementById('limietInput').value;
-    if (isNaN(budget)) {
-        window.plugins.toast.showShortBottom('Fout in invoer, laatst gebruikte limiet ingesteld');
-        budget = 10; //set this to last val
-    }
-    if (budget == ''){budget=10;}//set this to last val
 }
 
 function overviewUpdate() {
@@ -330,4 +341,22 @@ function msToTime(s) {
 
 function dateInput() {
     document.getElementById('tijdPlaceholder').style.visibility = 'hidden';
+}
+
+function validateLimiet() {
+    try {
+        budget = document.getElementById("limietInput").value;
+        if (budget.indexOf(",") >= 0) {
+            budget = budget.replace(',', '.');
+        }
+        var match1 = budget.match(/^([0-9]{1,3}|[0-9]{1,2}[.][0-9]{1,2})$/);
+        if (match1 == null){
+            return false;
+        }
+        if (match1 != null)
+            return true;
+    }
+    catch (e) {
+        return false;
+    }
 }
