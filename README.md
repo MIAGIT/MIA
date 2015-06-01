@@ -12,6 +12,7 @@ The used plugins are:
 - Vibration
 - Toast
 - Dialogs
+- Background mode
 
 ####Geolocation
 The GPS is used to give the users directions, and can be used to calculate the time it takes to go back to the car. This is used to give the user a heads-up that he/she needs to go back.
@@ -29,5 +30,9 @@ For the notification, giving the user the option 'OK' or to the navigation.
 ####Google Maps
 For navigation purposes
 
+###Google Distance Matrix
+For determining the time it takes to go back to the car, so the user is warned on time
+
 ####divvapi.parkshark
---Upcoming--
+For displaying the name, so the user can check ir it is correct and to remind the user where his car is parked
+Also used to determine the cost per minute for that particular parkingspot
