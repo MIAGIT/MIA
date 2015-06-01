@@ -154,30 +154,32 @@ var timeLeft;
 var notified = false;
 
 function locationGPS(mode) {
+    window.plugins.toast.showLongBottom('Jouw positie bepalen...');
     
     var onSuccess = function(position) {
         lat = position.coords.latitude;
         lng = position.coords.longitude;
-
+        window.plugins.toast.showLongBottom('Positie vastgesteld');
+        
         if (mode == 0){
             latCar=lat;
             lngCar=lng;
+            parkAPI();
             locationSet = true;
-            window.plugins.toast.showShortBottom('Location set!');
         } else if (mode == 1 && locationSet) {
             document.getElementById('maps').src = "https://www.google.com/maps/embed/v1/directions?key="+ APIkey+ "&origin="+ lat +","+ lng+ "&destination="+ latCar+","+ lngCar+ "&mode=walking";
         } else {
-            navigator.notification.confirm(
-                'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals',// message
-                GPSError,     // callback to invoke with index of button pressed
-                'GPS Fout',                                          	// title
-                ['OK']                                           // buttonLabels
-            );
+            window.plugins.toast.showLongBottom('Locatie van de auto onbekend!');
         }
     };
 
     function onError(error) {
-        window.plugins.toast.showShortBottom('GPS Error');
+        navigator.notification.confirm(
+            'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals',// message
+            GPSError,         // callback to invoke with index of button pressed
+            'GPS Fout',                                          	// title
+            ['OK']                                               // buttonLabels
+        );
     }
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
 }
@@ -188,22 +190,20 @@ function GPSError(){
 
 function park() {
     var startInput = document.getElementById('tijdInput').value;
+    
     if(startInput !== '') {
         start = new Date(startInput);
         start.setHours(start.getHours()-2);  
     } else {
         start = new Date();
     }
-
+    
     budget = document.getElementById('limietInput').value;
     if (isNaN(budget)) {
         window.plugins.toast.showShortBottom('Fout in invoer, laatst gebruikte limiet ingesteld');
         budget = 10; //set this to last val
     }
     if (budget == ''){budget=10;}//set this to last val
-    cost = 5.0;
-    costRate = 60;
-    costPerMin = cost/costRate;
 }
 
 function overviewUpdate() {
@@ -237,7 +237,43 @@ function overviewUpdate() {
 }
 
 function parkAPI() {
-    document.getElementById('APItest').src = "http://divvapi.parkshark.nl/apitest.jsp?action=plan&to_lat=51.5&to_lon=4.9&dd=28&mm=12&yy=2013&h=12&m=50&dur=2&opt_routes=y&opt_routes_ret=n&opt_am=n&opt_rec=y";
+    //test w parking meter
+    //lat = 52.3762398;
+    //lng = 4.91645;
+    var d = new Date();
+    var month = d.getMonth()+1;
+    var APIUrl = "http://divvapi.parkshark.nl/apitest.jsp?action=plan&to_lat="+lat+
+            "&to_lon="+lng+"&dd="+d.getDate()+"&mm="+month+"&yy="+d.getFullYear()+
+            "&h="+d.getHours()+"&m="+d.getMinutes()+"&dur=1&opt_routes=n&opt_routes_ret=n&opt_am=n&opt_rec=y";
+    //document.getElementById('APItest').src = APIUrl;
+    var garageURL;
+
+    $.getJSON(APIUrl).done(function(json) {
+        var isGarage;
+        var id;
+        if (json.result.reccommendations[0].name){isGarage = true;}
+        else{isGarage = false}
+        
+        if (!isGarage){
+            document.getElementById('waarInput').placeholder = json.result.reccommendations[0].address;
+            id = json.result.reccommendations[0].automat_number;
+            garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-meter-by-automat-number&id=" + id;
+            $.getJSON(garageURL).done(function(json) {
+                cost = json.result.meter.costs.cost;
+                costRate = 60;
+                costPerMin = cost/costRate;
+            });
+        } else {
+            document.getElementById('waarInput').placeholder = json.result.reccommendations[0].name;
+            id = json.result.reccommendations[0].garageid;
+            garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-garage-by-id&id=" + id;
+            $.getJSON(garageURL).done(function(json) {
+                cost = json.result.garage.price_per_time_unit;
+                costRate = json.result.garage.time_unit_minutes;
+                costPerMin = cost/costRate;
+            });
+        }
+    });
 }
 
 function dialogInput(buttonIndex) {

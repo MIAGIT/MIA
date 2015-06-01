@@ -115,3 +115,6 @@ header h1 {
     top: -48px;
     color: lightgray;
 }
+#lastrow {
+    clear:both;
+}
