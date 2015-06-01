@@ -63,6 +63,7 @@ var onDeviceReady = function () {
 };
 
 document.addEventListener('deviceready', onDeviceReady, false);
+document.addEventListener("backbutton", onBackKeyDown, false);
 
 Phonon.Navigator({
     defaultPage: 'home',
@@ -71,6 +72,8 @@ Phonon.Navigator({
 });
 
 //--Navigation Handler--//
+//can the user use the back button?
+var backEnable;
 //Home (Synchronous)
 Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, function(activity) {
 
@@ -84,7 +87,7 @@ Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, fun
         notified = false;
         locationSet = false;
         travelTime = null;
-
+        backEnable = false;
     });
 
     activity.onTransitionEnd(function() {
@@ -108,6 +111,7 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
             cordova.plugins.backgroundMode.enable();
             overviewUpdate();
             update = true;
+            backEnable = true;
     });
 
     activity.onTransitionEnd(function() {
@@ -141,6 +145,11 @@ Phonon.Navigator().on({page: 'navigate', template: 'navigate', asynchronous: fal
     });
 });
 
+function onBackKeyDown() {
+    if (backEnable){
+        Phonon.Navigator().changePage(getPreviousPage());
+    }
+}
 
 //--FUNCTIONS--//
 
@@ -174,12 +183,12 @@ function locationGPS(mode) {
         lng = position.coords.longitude;
         window.plugins.toast.showLongBottom('Positie vastgesteld');
         
-        if (mode == 0){
+        if (mode === 0){
             latCar=lat;
             lngCar=lng;
             parkAPI();
             locationSet = true;
-        } else if (mode == 1 && locationSet) {
+        } else if (mode === 1 && locationSet) {
             document.getElementById('maps').src = "https://www.google.com/maps/embed/v1/directions?key="+ APIkey+ "&origin="+ lat +","+ lng+ "&destination="+ latCar+","+ lngCar+ "&mode=walking";
         } else {
             window.plugins.toast.showLongBottom('Locatie van de auto onbekend!');
@@ -341,10 +350,10 @@ function validateLimiet() {
             budget = budget.replace(',', '.');
         }
         var match1 = budget.match(/^([0-9]{1,3}|[0-9]{1,2}[.][0-9]{1,2})$/);
-        if (match1 == null){
+        if (match1 === null){
             return false;
         }
-        if (match1 != null)
+        if (match1 !== null)
             return true;
     }
     catch (e) {
