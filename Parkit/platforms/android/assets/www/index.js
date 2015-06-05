@@ -108,10 +108,12 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
     });
 
     activity.onReady(function(self, el, req) {
-            cordova.plugins.backgroundMode.enable();
-            overviewUpdate();
-            update = true;
-            backEnable = true;
+        cordova.plugins.backgroundMode.enable();
+        overviewUpdate();
+        update = true;
+        backEnable = true;
+        document.getElementById('limietIngesteldVal').innerHTML = '&#8364;'+budget;
+        document.getElementById('parkPlaceVal').innerHTML = parkingName;
     });
 
     activity.onTransitionEnd(function() {
@@ -189,6 +191,9 @@ function locationGPS(mode) {
             parkAPI();
             locationSet = true;
         } else if (mode === 1 && locationSet) {
+            //test co-ords
+            lat = 52.3762398;
+            lng = 4.91645;
             document.getElementById('maps').src = "https://www.google.com/maps/embed/v1/directions?key="+ APIkey+ "&origin="+ lat +","+ lng+ "&destination="+ latCar+","+ lngCar+ "&mode=walking";
         } else {
             window.plugins.toast.showLongBottom('Locatie van de auto onbekend!');
@@ -197,10 +202,10 @@ function locationGPS(mode) {
 
     function onError(error) {
         navigator.notification.confirm(
-            'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals',// message
-            GPSError,         // callback to invoke with index of button pressed
-            'GPS Fout',                                          	// title
-            ['OK']                                               // buttonLabels
+            'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals', // message
+            GPSError,                   // callback to invoke with index of button pressed
+            'GPS Fout',                                                      	  // title
+            ['OK']                                                         // buttonLabels
         );
     }
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
@@ -211,19 +216,25 @@ function GPSError(){
 }
 
 function park() {
-    if(validateLimiet()){
+    budget = document.getElementById("limietInput").value;
+    if (!budget) {
+        budget = "10,00";
+    }
+
+    if (validateLimiet()) {
         var startInput = document.getElementById('tijdInput').value;
-        if(startInput !== '') {
+        if (startInput !== '') {
             start = new Date(startInput);
-            start.setHours(start.getHours()-2);  
+            start.setHours(start.getHours() - 2);
         } else {
             start = new Date();
         }
-
+        budget = parseFloat(budget);
+        budget = budget.toFixed(2);
+        
         Phonon.Navigator().changePage('overview');
     } else {
-        var msg = 'Geef een getal tussen 0 en 999 in, op maximaal 2 decimalen';
-            window.plugins.toast.showLongBottom(msg);
+        window.plugins.toast.showLongBottom('Voer een correct bedrag in');
     }
 }
 
@@ -243,7 +254,7 @@ function overviewUpdate() {
     document.getElementById('timeleft').innerHTML=msToTime(timeLeft);
     
     //notification
-    if(timeLeft <travelTime && !notified)
+    if(timeLeft < travelTime && !notified)
     {
         notification();
         notified = true;
@@ -343,20 +354,18 @@ function dateInput() {
     document.getElementById('tijdPlaceholder').style.visibility = 'hidden';
 }
 
-function validateLimiet() {
+function validateLimiet(){
     try {
-        budget = document.getElementById("limietInput").value;
         if (budget.indexOf(",") >= 0) {
-            budget = budget.replace(',', '.');
+          budget = budget.replace(',','.');
         }
         var match1 = budget.match(/^([0-9]{1,3}|[0-9]{1,2}[.][0-9]{1,2})$/);
-        if (match1 === null){
-            return false;
-        }
-        if (match1 !== null)
-            return true;
-    }
-    catch (e) {
-        return false;
-    }
+        
+        if (match1 == null) return false;
+        if (match1 != null) return true;
+    } 
+    catch(e) {
+        //alert("no match");
+        alert(e);
+      }
 }

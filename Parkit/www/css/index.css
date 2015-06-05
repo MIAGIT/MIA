@@ -62,7 +62,7 @@ header h1 {
 /*----------------overview--------------------------------*/
 
 #navknop{
-	margin: 50px auto 0 auto;
+	margin: 25px auto 0 auto;
         height: 55.5px;
         width: 55.5px;
 }
@@ -76,6 +76,39 @@ header h1 {
 }
 #overviewtext{
 	margin: -15px 0 -20px 0;
+}
+#labelWrapper {
+    position: absolute;
+    bottom: 5%;
+    width: 100%;
+}
+#labels {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+    width: 75%;
+}
+#limietLabel p, #limietIngesteld, #parkLabel p, #parkPlace {
+    display: inline-block;
+}
+#limietLabel p, #parkLabel p {
+    color: #999999;
+    font-size: 14px;
+    width: 50%;
+}
+#limietIngesteld, #parkPlace {
+    width: 50%;
+    height: 28px;
+    float: right;
+    background-color: #cccccc;
+    border-radius: 20px;
+}
+#limietLabel div p, #parkLabel div p {
+    float: none;
+    width: 80%;
+    text-align: center;
+    margin: 0;
+    margin-left: 10%;
 }
 
 
