@@ -110,7 +110,10 @@ header h1 {
     margin: 0;
     margin-left: 10%;
 }
-
+#parkLabel {
+    overflow: hidden;
+    height: 28px;
+}
 
 /*------------------home--------------------------------*/
 #hometext{
@@ -150,4 +153,8 @@ header h1 {
 }
 #lastrow {
     clear:both;
+}
+
+select {
+    display: initial;
 }
