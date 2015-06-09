@@ -374,7 +374,7 @@ function parkAPI() {
                 parkingPrices[2]+'\n'+
                 parkingPrices[3]+'\n'+
                 parkingPrices[4]+'\n'+
-                parkingPrices[5]+'\n')
+                parkingPrices[5]+'\n');
         $("#parkSelect")[0].selectedIndex = 0;
     });
 }
