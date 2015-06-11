@@ -286,7 +286,6 @@ function overviewUpdate() {
     elapsed = new Date() - start;
     var elapsedMin = (elapsed/1000)/60;
     costNow = elapsedMin*costPerMin;
-    document.getElementById('costs').innerHTML='&#8364;'+costNow.toFixed(2);
     
     //Time left
     var costLeft = budget - costNow;
@@ -294,6 +293,11 @@ function overviewUpdate() {
     if (timeLeft <= 0){ //prevent negative time
         timeLeft = 0;
     }
+    if (costNow <= 0){ //prevent negative price when users park in the future
+        costNow = 0;
+    }
+    
+    document.getElementById('costs').innerHTML='&#8364;'+costNow.toFixed(2);
     document.getElementById('timeleft').innerHTML=msToTime(timeLeft);
     
     //notification
@@ -464,12 +468,12 @@ function removeOptions(selectbox)
 function popupOpen() {
     var d = new Date();
     document.getElementById("tijdInput").placeholder = d;
-    document.getElementById('dateTimePopup').style.visibility = 'visible';
+    document.getElementById('dateTimePopup').style.display = 'initial';
 }
 function popupClose() {
-    document.getElementById('dateTimePopup').style.visibility = 'hidden';
+    document.getElementById('dateTimePopup').style.display = 'none';
 }
 function popupEmpty() {
-    document.getElementById('dateTimePopup').style.visibility = 'hidden';
+    document.getElementById('dateTimePopup').style.display = 'none';
     document.getElementById('tijdInput').value = '';
 }

@@ -185,7 +185,7 @@ select {
     left: 0;
     background-color: rgba(0,0,0,0.6);
     z-index: 99;
-    visibility: hidden;
+    display: none;
     transition: all .3s;
 }
 #dateTimePopup #popup{
@@ -218,12 +218,13 @@ select {
 .card-action button {
     float: right;
     padding: 12px;
-    color: #2bc4fe;
+    color: #26a69a;
+    font-weight: 600;
 }
 #timeIcon:focus, .card-action button:focus {
     background-color: rgba(0,0,0,0);
 }
 .card .card-action {
     border: none;
-    padding: 4px 16px 20px 16px;
+    padding: 0 16px 24px 16px;
 }
