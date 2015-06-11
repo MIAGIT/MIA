@@ -158,3 +158,11 @@ header h1 {
 select {
     display: initial;
 }
+.row form .row {
+    height: 72px;
+}
+#parkSelect {
+    border:none;
+    border-bottom: 1px solid #9e9e9e;
+    outline: none;
+}

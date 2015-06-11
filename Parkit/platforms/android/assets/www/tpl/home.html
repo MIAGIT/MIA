@@ -41,7 +41,7 @@
             </div>
             <div class="row">
                 <div class="input-field col">
-                    <input placeholder="Mathildelaan" id='waarInput' type="text" class="validate">
+                    <select id="parkSelect" size="5"></select>
                 </div>
             </div>
         </form>
@@ -49,10 +49,8 @@
 
     <div id="lastrow" class="row">
         <a id="btn_park" >
-            <button class="waves-effect waves-light blue btn" onclick="park()">Parkeer</button>
+            <button id="buttonPark" class="waves-effect waves-light blue btn disabled" onclick="park()">Parkeer</button>
         </a>
-        <select id="parkSelect" size="5">
-        </select>
     </div>
 
 </div>

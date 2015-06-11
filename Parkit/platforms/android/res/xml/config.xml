@@ -22,13 +22,14 @@
     </feature>
     <preference name="KeepRunning" value="true" />
     <allow-intent href="market:*" />
-    <name>HelloCordova</name>
+    <name>Parkit</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        An awesome project for MIA.
     </description>
     <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+        Marloes &amp; Nick
     </author>
+    <icon src="icons/notificationIcon.png" />
     <content src="index.html" />
     <access origin="*" />
     <access origin="http://maps.google.com" />

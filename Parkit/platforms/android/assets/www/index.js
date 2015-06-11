@@ -74,6 +74,8 @@ Phonon.Navigator({
 //--Navigation Handler--//
 //can the user use the back button?
 var backEnable;
+//can the user tap the park button?
+var parkAvailable=false;
 //Home (Synchronous)
 Phonon.Navigator().on({page: 'home', template: 'home', asynchronous: false}, function(activity) {
 
@@ -179,7 +181,11 @@ var timeTolerance = 420; //time in secs
 var notified = false;
 var parkingName;
 var parkingPlaces = [];
-var parkingPrices = [];
+var parkingPrices;
+var id = [];
+var isGarage = [];
+var garageURL;
+
 
 function locationGPS(mode) {
     window.plugins.toast.showLongBottom('Jouw positie bepalen...');
@@ -187,12 +193,14 @@ function locationGPS(mode) {
     var onSuccess = function(position) {
         lat = position.coords.latitude;
         lng = position.coords.longitude;
-        window.plugins.toast.showLongBottom('Positie vastgesteld');
+        window.plugins.toast.showShortBottom('Positie vastgesteld');
         
         if (mode === 0){
             latCar=lat;
             lngCar=lng;
             parkAPI();
+            parkAvailable = true;
+            document.getElementById('buttonPark').classList.remove('disabled');
             locationSet = true;
         } else if (mode === 1 && locationSet) {
             //test co-ords
@@ -220,35 +228,57 @@ function GPSError(){
 }
 
 function park() {
-    var index = document.getElementById('parkSelect').selectedIndex;
-    alert(parkingPrices.length);
-    alert(parkingPlaces.length);
-    budget = document.getElementById("limietInput").value;
-    if (!budget) {
-        budget = "10,00";
-    }
+    if (parkAvailable)
+    {
+        var index = document.getElementById('parkSelect').selectedIndex;
+        //alert(index);
 
-    if (validateLimiet()) {
-        var startInput = document.getElementById('tijdInput').value;
-        if (startInput !== '') {
-            start = new Date(startInput);
-            start.setHours(start.getHours() - 2);
+        if (!isGarage[index]) {
+            garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-meter-by-automat-number&id=" + id[index];
+            $.getJSON(garageURL).done(function(json) {
+                cost = json.result.meter.costs.cost;
+                costRate = 60;
+                //parkingPrices = cost/costRate;
+                costPerMin = cost / costRate;
+                //alert(parkingPrices);
+            });
         } else {
-            start = new Date();
+            garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-garage-by-id&id=" + id[index];
+            $.getJSON(garageURL).done(function(json) {
+                cost = json.result.garage.price_per_time_unit;
+                costRate = json.result.garage.time_unit_minutes;
+                //parkingPrices = cost / costRate;
+                costPerMin = cost / costRate;
+                //alert(parkingPrices);
+            });
         }
-        budget = parseFloat(budget);
-        budget = budget.toFixed(2);
-        
-        Phonon.Navigator().changePage('overview');
-    } else {
-        window.plugins.toast.showLongBottom('Voer een correct bedrag in');
+
+        budget = document.getElementById("limietInput").value;
+        if (!budget) {
+            budget = "10,00";
+        }
+
+        if (validateLimiet()) {
+            var startInput = document.getElementById('tijdInput').value;
+            if (startInput !== '') {
+                start = new Date(startInput);
+                start.setHours(start.getHours() - 2);
+            } else {
+                start = new Date();
+            }
+            budget = parseFloat(budget);
+            budget = budget.toFixed(2);
+            Phonon.Navigator().changePage('overview');
+        } else {
+            window.plugins.toast.showLongBottom('Voer een correct bedrag in');
+        }
+
+
+        parkingName = parkingPlaces[index];
+        //set park button to disabled for the next time
+        parkAvailable = false;
+        document.getElementById('buttonPark').classList.add('disabled');
     }
-    
-    
-    parkingName = parkingPlaces[index];
-    costPerMin = parkingPrices[index];
-    alert(parkingName);
-    alert(costPerMin);
 }
 
 function overviewUpdate() {
@@ -282,7 +312,7 @@ function overviewUpdate() {
 }
 
 function travelTimeUpdate() {
-    var timeUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?key="+APIKey+"&origins="
+    var timeUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?key="+APIkey+"&origins="
                     +lat+","+lng+"&destinations="+latCar+","+lngCar+"&mode=walking";
 
     $.getJSON(timeUrl).done(function(json) {
@@ -301,7 +331,7 @@ function parkAPI() {
     
     var list = document.getElementById('parkSelect');
     var opt = document.createElement("option");
-    var garageURL;
+    
     var d = new Date();
     var month = d.getMonth()+1;
     var APIUrl = "http://divvapi.parkshark.nl/apitest.jsp?action=plan&to_lat="+lat+
@@ -309,8 +339,8 @@ function parkAPI() {
             "&h="+d.getHours()+"&m="+d.getMinutes()+"&dur=1&opt_routes=n&opt_routes_ret=n&opt_am=n&opt_rec=y";
 
     $.getJSON(APIUrl).done(function(json) {
-        var isGarage;
-        var id;
+        
+        
         /*
         if (json.result.reccommendations[0].name){isGarage = true;}
         else{isGarage = false;}
@@ -341,40 +371,35 @@ function parkAPI() {
         
         //get 4 other closest garages
         for (i = 0; i < 5; i++) {
-            if (json.result.reccommendations[i].name) {isGarage = true;}
-            else {isGarage = false;}
+            if (json.result.reccommendations[i].name) {isGarage[i] = true;}
+            else {isGarage[i] = false;}
 
-            if (!isGarage) {
+            if (!isGarage[i]) {
                 parkingPlaces[i] = json.result.reccommendations[i].address;
-                id = json.result.reccommendations[i].automat_number;
-                garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-meter-by-automat-number&id=" + id;
+                id[i] = json.result.reccommendations[i].automat_number;
+                /*garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-meter-by-automat-number&id=" + id;
                 $.getJSON(garageURL).done(function(json) {
                     cost = json.result.meter.costs.cost;
                     costRate = 60;
                     parkingPrices[i] = cost/costRate;
                     alert(parkingPrices[i]+" . "+i);
-                });
+                });*/
             } else {
                 parkingPlaces[i] = json.result.reccommendations[i].name;
-                id = json.result.reccommendations[i].garageid;
-                garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-garage-by-id&id=" + id;
+                id[i] = json.result.reccommendations[i].garageid;
+                /*garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-garage-by-id&id=" + id;
                 $.getJSON(garageURL).done(function(json) {
                     cost = json.result.garage.price_per_time_unit;
                     costRate = json.result.garage.time_unit_minutes;
                     parkingPrices[i] = cost/costRate;
                     alert(parkingPrices[i]+" . "+i);
-                });
+                });*/
             }
             var option = document.createElement("option");
             option.text = parkingPlaces[i];
             list.add(option,list[i]);
         }
-        alert(parkingPrices[0]+'\n'+
-                parkingPrices[1]+'\n'+
-                parkingPrices[2]+'\n'+
-                parkingPrices[3]+'\n'+
-                parkingPrices[4]+'\n'+
-                parkingPrices[5]+'\n')
+
         $("#parkSelect")[0].selectedIndex = 0;
     });
 }

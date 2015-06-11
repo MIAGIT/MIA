@@ -1,12 +1,13 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="io.cordova.hellocordova" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>HelloCordova</name>
+    <name>Parkit</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        An awesome project for MIA.
     </description>
     <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+        Marloes & Nick
     </author>
+    <icon src="icons/notificationIcon.png" />
     <content src="index.html" />
     <plugin name="cordova-plugin-whitelist" version="1" />
     <access origin="*" />
