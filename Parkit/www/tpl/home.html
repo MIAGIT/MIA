@@ -1,5 +1,5 @@
 <header class="header-bar">
-    <a class="btn-action pull-right mdi-image-timer" href="#!overview"></a>
+    <button id="timeIcon" class="btn-action pull-right mdi-image-timer" onclick="popupOpen()"></button>
     <h1 class="title">Parkit</h1>
 </header>
 <div class="content content-padded">
@@ -14,11 +14,11 @@
                     <span class="input-label">Limiet &#8364</span>
                 </div>
             </div>
-            <div class="row">
+            <!--<div class="row">
                 <div class="input-field col">
                     <span class="input-label">Vanaf</span>
                 </div>
-            </div>
+            </div>-->
             <div class="row">
                 <div class="input-field col">
                     <span class="input-label"><i class="mdi-maps-local-parking"></i></span>
@@ -34,12 +34,12 @@
                     <input placeholder="10" id='limietInput' type="tel" class="validate">
                 </div>
             </div>
-            <div class="row">
+            <!--<div class="row">
                 <div class="input-field col">
                     <input id='tijdInput' type="datetime-local" class="validate" onfocus="dateInput()">
                     <span class="input-label" id="tijdPlaceholder">nu</span>
                 </div>
-            </div>
+            </div>-->
             <div class="row">
                 <div class="input-field col">
                     <select id="parkSelect" size="5"></select>
@@ -53,5 +53,25 @@
             <button id="buttonPark" class="waves-effect waves-light blue btn disabled" onclick="park()">Parkeer</button>
         </a>
     </div>
-
+</div>
+<div id="dateTimePopup">
+    <div id="popup" class="row">
+        <div class="col s12 m7">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">Te laat?</span>
+                    <p>Ben je vergeten Parkit in stellen? Zet dan hier de tijd terug.</p>
+                    <div class="row">
+                        <div id="tijdInputContain" class="input-field col">
+                            <input id='tijdInput' type="datetime-local" class="validate" placeholder="nu">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button id="buttonPark" class="waves-effect waves-blue btn-flat" onclick="popupEmpty()">Annuleer</button>
+                    <button id="buttonPark" class="waves-effect waves-blue btn-flat" onclick="popupClose()">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

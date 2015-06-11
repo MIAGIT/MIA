@@ -460,3 +460,16 @@ function removeOptions(selectbox)
         selectbox.remove(i);
     }
 }
+
+function popupOpen() {
+    var d = new Date();
+    document.getElementById("tijdInput").placeholder = d;
+    document.getElementById('dateTimePopup').style.visibility = 'visible';
+}
+function popupClose() {
+    document.getElementById('dateTimePopup').style.visibility = 'hidden';
+}
+function popupEmpty() {
+    document.getElementById('dateTimePopup').style.visibility = 'hidden';
+    document.getElementById('tijdInput').value = '';
+}
