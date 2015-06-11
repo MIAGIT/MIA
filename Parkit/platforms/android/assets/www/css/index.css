@@ -12,6 +12,7 @@ body {
     padding:0px;
     width:100%;
     font-family: "Roboto", sans-serif;
+    overflow: hidden;                           /* prevent scrollable page when keyboard is active */
 }
 
 /* Portrait layout (default) 
@@ -48,6 +49,11 @@ body {
 
 .header-bar a {
     font-size: 1.6rem;
+}
+
+.content-padded {
+    margin-bottom: 0;
+    overflow: hidden;
 }
 
 #maps {
@@ -117,8 +123,8 @@ header h1 {
 
 /*------------------home--------------------------------*/
 #hometext{
-	margin: 30px auto 0 auto;
-	width: 80%;
+	margin: 30px auto;
+	width: 89%;
 }
 
 #btn_park{
@@ -149,7 +155,11 @@ header h1 {
 #tijdPlaceholder {
     position: relative;
     top: -48px;
-    color: lightgray;
+    padding-left: 3px;
+    color: #888;
+}
+input::-webkit-input-placeholder {
+    color: #888;
 }
 #lastrow {
     clear:both;
@@ -165,4 +175,5 @@ select {
     border:none;
     border-bottom: 1px solid #9e9e9e;
     outline: none;
+    padding-left: 0;
 }
