@@ -65,7 +65,6 @@ var onDeviceReady = function () {
 
 document.addEventListener('deviceready', onDeviceReady, false);
 
-
 Phonon.Navigator({
     defaultPage: 'home',
     templatePath: "tpl",
@@ -120,6 +119,9 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
         document.getElementById('limietIngesteldVal').innerHTML = '&#8364;'+budget;
         document.getElementById('parkPlaceVal').innerHTML = parkingName;
         popupEmpty();
+        //set park button to disabled for the next time
+        parkAvailable = false;
+        document.getElementById('buttonPark').classList.add('disabled');
     });
 
     activity.onTransitionEnd(function() {
@@ -260,11 +262,11 @@ function park() {
             budget = "10,00";
         }
 
-        if (validateLimiet()) {
+        if (validateLimiet(budget)) {
             var startInput = document.getElementById('tijdInput').value;
-            if (startInput !== '') {
-                start = new Date(startInput);
-                start.setHours(start.getHours() - 2);
+            if (startInput !== '') {        
+                start = new Date();
+                start.setTime(start.getTime()-(startInput * 60000));
             } else {
                 start = new Date();
             }
@@ -277,9 +279,6 @@ function park() {
 
 
         parkingName = parkingPlaces[index];
-        //set park button to disabled for the next time
-        parkAvailable = false;
-        document.getElementById('buttonPark').classList.add('disabled');
     }
 }
 
@@ -398,19 +397,19 @@ function dateInput() {
     document.getElementById('tijdPlaceholder').style.visibility = 'hidden';
 }
 
-function validateLimiet(){
+function validateLimiet(val){
     try {
-        if (budget.indexOf(",") >= 0) {
-          budget = budget.replace(',','.');
+        if (val.indexOf(",") >= 0) {
+            val = val.replace(',','.');
         }
-        var match1 = budget.match(/^([0-9]{1,3}|[0-9]{1,2}[.][0-9]{1,2})$/);
+        var match1 = val.match(/^([0-9]{1,3}|[0-9]{1,2}[.][0-9]{1,2})$/);
         
         if (match1 == null) return false;
         if (match1 != null) return true;
     } 
     catch(e) {
         alert(e);
-      }
+    }
 }
 
 function removeOptions(selectbox)
@@ -423,12 +422,15 @@ function removeOptions(selectbox)
 }
 
 function popupOpen() {
-    var d = new Date();
-    document.getElementById("tijdInput").placeholder = d;
     document.getElementById('dateTimePopup').style.display = 'initial';
 }
 function popupClose() {
-    document.getElementById('dateTimePopup').style.display = 'none';
+    var input = document.getElementById('tijdInput').value;
+    if(validateLimiet(input.toString())) {
+        document.getElementById('dateTimePopup').style.display = 'none';
+    } else {
+        window.plugins.toast.showLongBottom('Voer een correct aantal minuten in');
+    }    
 }
 function popupEmpty() {
     document.getElementById('dateTimePopup').style.display = 'none';

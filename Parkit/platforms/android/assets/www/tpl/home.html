@@ -14,11 +14,6 @@
                     <span class="input-label">Limiet &#8364</span>
                 </div>
             </div>
-            <!--<div class="row">
-                <div class="input-field col">
-                    <span class="input-label">Vanaf</span>
-                </div>
-            </div>-->
             <div class="row">
                 <div class="input-field col">
                     <span class="input-label"><i class="mdi-maps-local-parking"></i></span>
@@ -34,12 +29,6 @@
                     <input placeholder="10" id='limietInput' type="tel" class="validate">
                 </div>
             </div>
-            <!--<div class="row">
-                <div class="input-field col">
-                    <input id='tijdInput' type="datetime-local" class="validate" onfocus="dateInput()">
-                    <span class="input-label" id="tijdPlaceholder">nu</span>
-                </div>
-            </div>-->
             <div class="row">
                 <div class="input-field col">
                     <select id="parkSelect" size="5"></select>
@@ -60,10 +49,10 @@
             <div class="card">
                 <div class="card-content">
                     <span class="card-title">Te laat?</span>
-                    <p>Ben je vergeten Parkit in stellen? Zet dan hier de tijd terug.</p>
+                    <p>Ben je vergeten Parkit in stellen? Geef hier aan hoeveel minuten je te laat bent</p>
                     <div class="row">
                         <div id="tijdInputContain" class="input-field col">
-                            <input id='tijdInput' type="datetime-local" class="validate" placeholder="nu">
+                            <input id='tijdInput' type="number" class="validate" placeholder="0 minuten">
                         </div>
                     </div>
                 </div>
