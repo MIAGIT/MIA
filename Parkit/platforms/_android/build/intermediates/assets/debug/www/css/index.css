@@ -1,0 +1,230 @@
+
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+}
+
+body {
+    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+    height:100%;
+    margin:0px;
+    padding:0px;
+    width:100%;
+    font-family: "Roboto", sans-serif;
+    overflow: hidden;                           /* prevent scrollable page when keyboard is active */
+}
+
+/* Portrait layout (default) 
+.app {
+    position:absolute;             // position in the center of the screen 
+    left:50%;
+    top:50%;
+    height:50px;                   // text area height 
+    width:225px;                   // text area width 
+    text-align:center;
+    padding:180px 0px 0px 0px;     // image height is 200px (bottom 20px are overlapped with text) 
+    margin:-115px 0px 0px -112px;  // offset vertical: half of image height and text area height 
+                                   // offset horizontal: half of text area width 
+}
+
+// Landscape layout (with min-width)
+@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
+    .app {
+        background-position:left center;
+        padding:75px 0px 75px 170px;  // padding-top + padding-bottom + text area = image height 
+        margin:-90px 0px 0px -198px;  // offset vertical: half of image height 
+                                      // offset horizontal: half of image width and text area width 
+    }
+}*/
+
+.header-bar {
+    height: 48px;
+}
+
+.header-bar .title {
+    font-size: 1.6rem;
+    margin-left: 20px;
+}
+
+.header-bar a {
+    font-size: 1.6rem;
+}
+
+.content-padded {
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+#maps {
+    height: 100%;
+    width:100%;
+}
+
+header h1 {
+    margin:0;
+}
+
+/*----------------overview--------------------------------*/
+
+#navknop{
+	margin: 25px auto 0 auto;
+        height: 55.5px;
+        width: 55.5px;
+}
+
+.info{
+	text-align: center;
+	margin: 20% auto 0 auto;
+}
+#costs {
+    margin-bottom: 50px;
+}
+#overviewtext{
+	margin: -15px 0 -20px 0;
+}
+#labelWrapper {
+    position: absolute;
+    bottom: 5%;
+    width: 100%;
+}
+#labels {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+    width: 75%;
+}
+#limietLabel p, #limietIngesteld, #parkLabel p, #parkPlace {
+    display: inline-block;
+}
+#limietLabel p, #parkLabel p {
+    color: #999999;
+    font-size: 14px;
+    width: 50%;
+}
+#limietIngesteld, #parkPlace {
+    width: 50%;
+    height: 28px;
+    float: right;
+    background-color: #cccccc;
+    border-radius: 20px;
+}
+#limietLabel div p, #parkLabel div p {
+    float: none;
+    width: 80%;
+    text-align: center;
+    margin: 0;
+    margin-left: 10%;
+}
+#parkLabel {
+    overflow: hidden;
+    height: 28px;
+}
+
+/*------------------home--------------------------------*/
+#hometext{
+	margin: 30px auto;
+	width: 89%;
+}
+
+#btn_park{
+	margin: 0 auto 0 31%;
+}
+
+#row_input_home1{
+	width: 30%;
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+#row_input_home2{
+	width: 70%;
+	float: left;
+}
+
+#row_input_home2 .col .row .input-field {
+    width: 100%;
+}
+#row_input_home1 .col .row {
+    height: 72px;
+}
+#row_input_home1 > form {
+    padding-top: 10px;
+}
+#tijdPlaceholder {
+    position: relative;
+    top: -48px;
+    padding-left: 3px;
+    color: #888;
+}
+input::-webkit-input-placeholder {
+    color: #888;
+}
+#lastrow {
+    clear:both;
+}
+
+select {
+    display: initial;
+}
+.row form .row {
+    height: 72px;
+}
+#parkSelect {
+    border:none;
+    border-bottom: 1px solid #9e9e9e;
+    outline: none;
+    padding-left: 0;
+}
+#dateTimePopup {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 99;
+    display: none;
+    transition: all .3s;
+}
+#dateTimePopup #popup{
+    margin-top: 40%;
+    width: 92%;
+}
+.card .card-title {
+    color: #333;
+    font-weight: 600;
+}
+.card .row {
+    margin-bottom: 0;
+}
+.card .card-content {
+    padding-bottom: 0;
+}
+#tijdInputContain {
+    width: 100%;
+    padding: 0;
+}
+#timeIcon {
+    font-size: 1.6rem;
+}
+#tijdInput::-webkit-input-placeholder {
+    color: #333;
+}
+.card-action {
+    overflow: hidden;
+}
+.card-action button {
+    float: right;
+    padding: 12px;
+    color: #26a69a;
+    font-weight: 600;
+}
+#timeIcon:focus, .card-action button:focus {
+    background-color: rgba(0,0,0,0);
+}
+.card .card-action {
+    border: none;
+    padding: 0 16px 24px 16px;
+}

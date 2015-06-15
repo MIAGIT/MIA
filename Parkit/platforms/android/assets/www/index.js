@@ -60,10 +60,11 @@ window.addEventListener('load', function() {
 
 var onDeviceReady = function () {
 	Phonon.Navigator().start('home');
+        document.addEventListener("backbutton", onBackKeyDown, false);
 };
 
 document.addEventListener('deviceready', onDeviceReady, false);
-document.addEventListener("backbutton", onBackKeyDown, false);
+
 
 Phonon.Navigator({
     defaultPage: 'home',
@@ -118,6 +119,7 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
         backEnable = true;
         document.getElementById('limietIngesteldVal').innerHTML = '&#8364;'+budget;
         document.getElementById('parkPlaceVal').innerHTML = parkingName;
+        popupEmpty();
     });
 
     activity.onTransitionEnd(function() {
@@ -191,17 +193,20 @@ function locationGPS(mode) {
     window.plugins.toast.showLongBottom('Jouw positie bepalen...');
     
     var onSuccess = function(position) {
+        alert('gps');
         lat = position.coords.latitude;
         lng = position.coords.longitude;
         window.plugins.toast.showShortBottom('Positie vastgesteld');
         
         if (mode === 0){
+            alert('gps1');
             latCar=lat;
             lngCar=lng;
             parkAPI();
             parkAvailable = true;
             document.getElementById('buttonPark').classList.remove('disabled');
             locationSet = true;
+            alert('gps2');
         } else if (mode === 1 && locationSet) {
             //test co-ords
             //lat = 52.3762398;
@@ -220,7 +225,7 @@ function locationGPS(mode) {
             ['OK']                                                         // buttonLabels
         );
     }
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, {enableHighAccuracy: true });
 }
 
 function GPSError(){

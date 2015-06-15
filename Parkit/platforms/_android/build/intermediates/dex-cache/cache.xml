@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Nick\Documents\GitHub\MIA\Parkit\platforms\android\build\intermediates\exploded-aar\android\CordovaLib\unspecified\debug\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="30d1a9cd7b2cba0e167314be6a34ea6e38bb0296">
+        <dex dex="C:\Users\Nick\Documents\GitHub\MIA\Parkit\platforms\android\build\intermediates\pre-dexed\debug\classes-4ac82b5f77a2e9bb1778e0bdfd6ae4f692c561d0.jar" />
+    </item>
+    <item
+        jar="C:\Users\Nick\Documents\meh\Parkit\platforms\android\build\intermediates\exploded-aar\android\CordovaLib\unspecified\debug\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="966fe79a2503cb9a8803d13352b2803268e1b028">
+        <dex dex="C:\Users\Nick\Documents\meh\Parkit\platforms\android\build\intermediates\pre-dexed\debug\classes-b98bcd292993f3d5c26bd71f0a33a0bac6d3a12c.jar" />
+    </item>
+
+</items>

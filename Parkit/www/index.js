@@ -59,11 +59,12 @@ window.addEventListener('load', function() {
 }, false);
 
 var onDeviceReady = function () {
-	Phonon.Navigator().start('home');
+    Phonon.Navigator().start('home');
+    document.addEventListener("backbutton", onBackKeyDown, false);
 };
 
 document.addEventListener('deviceready', onDeviceReady, false);
-document.addEventListener("backbutton", onBackKeyDown, false);
+
 
 Phonon.Navigator({
     defaultPage: 'home',
@@ -118,6 +119,7 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
         backEnable = true;
         document.getElementById('limietIngesteldVal').innerHTML = '&#8364;'+budget;
         document.getElementById('parkPlaceVal').innerHTML = parkingName;
+        popupEmpty();
     });
 
     activity.onTransitionEnd(function() {
@@ -220,7 +222,7 @@ function locationGPS(mode) {
             ['OK']                                                         // buttonLabels
         );
     }
-    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, {enableHighAccuracy: true });
 }
 
 function GPSError(){
@@ -342,37 +344,7 @@ function parkAPI() {
             "&to_lon="+lng+"&dd="+d.getDate()+"&mm="+month+"&yy="+d.getFullYear()+
             "&h="+d.getHours()+"&m="+d.getMinutes()+"&dur=1&opt_routes=n&opt_routes_ret=n&opt_am=n&opt_rec=y";
 
-    $.getJSON(APIUrl).done(function(json) {
-        
-        
-        /*
-        if (json.result.reccommendations[0].name){isGarage = true;}
-        else{isGarage = false;}
-        
-        if (!isGarage){
-            parkingName = json.result.reccommendations[0].address;
-            id = json.result.reccommendations[0].automat_number;
-            garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-meter-by-automat-number&id=" + id;
-            $.getJSON(garageURL).done(function(json) {
-                cost = json.result.meter.costs.cost;
-                costRate = 60;
-                costPerMin = cost/costRate;
-            });
-        } else {
-            parkingName = json.result.reccommendations[0].name;
-            id = json.result.reccommendations[0].garageid;
-            garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-garage-by-id&id=" + id;
-            $.getJSON(garageURL).done(function(json) {
-                cost = json.result.garage.price_per_time_unit;
-                costRate = json.result.garage.time_unit_minutes;
-                costPerMin = cost/costRate;
-            });
-        }
-        
-        opt.text = parkingName;
-        list.add(opt,list[0]);
-        document.getElementById('waarInput').placeholder = parkingName;*/
-        
+    $.getJSON(APIUrl).done(function(json) {        
         //get 4 other closest garages
         for (i = 0; i < 5; i++) {
             if (json.result.reccommendations[i].name) {isGarage[i] = true;}
@@ -381,23 +353,9 @@ function parkAPI() {
             if (!isGarage[i]) {
                 parkingPlaces[i] = json.result.reccommendations[i].address;
                 id[i] = json.result.reccommendations[i].automat_number;
-                /*garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-meter-by-automat-number&id=" + id;
-                $.getJSON(garageURL).done(function(json) {
-                    cost = json.result.meter.costs.cost;
-                    costRate = 60;
-                    parkingPrices[i] = cost/costRate;
-                    alert(parkingPrices[i]+" . "+i);
-                });*/
             } else {
                 parkingPlaces[i] = json.result.reccommendations[i].name;
                 id[i] = json.result.reccommendations[i].garageid;
-                /*garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-garage-by-id&id=" + id;
-                $.getJSON(garageURL).done(function(json) {
-                    cost = json.result.garage.price_per_time_unit;
-                    costRate = json.result.garage.time_unit_minutes;
-                    parkingPrices[i] = cost/costRate;
-                    alert(parkingPrices[i]+" . "+i);
-                });*/
             }
             var option = document.createElement("option");
             option.text = parkingPlaces[i];
@@ -451,7 +409,6 @@ function validateLimiet(){
         if (match1 != null) return true;
     } 
     catch(e) {
-        //alert("no match");
         alert(e);
       }
 }

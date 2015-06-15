@@ -1,0 +1,2 @@
+C:\Users\Nick\Documents\GitHub\MIA\Parkit\platforms\android\build\intermediates\classes\debug
+C:\Users\Nick\Documents\GitHub\MIA\Parkit\platforms\android\build\intermediates\pre-dexed\debug\classes-4ac82b5f77a2e9bb1778e0bdfd6ae4f692c561d0.jar
