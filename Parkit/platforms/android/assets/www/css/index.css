@@ -86,7 +86,10 @@ header h1 {
 #labelWrapper {
     position: absolute;
     bottom: 5%;
-    width: 100%;
+    width: 90%;
+    display: block;
+    height: auto;
+    overflow: auto;
 }
 #labels {
     margin-left: auto;

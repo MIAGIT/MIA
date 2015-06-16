@@ -1,0 +1,66 @@
+<header class="header-bar">
+    <button id="timeIcon" class="btn-action pull-right mdi-image-timer" onclick="popupOpen()"></button>
+    <h1 class="title">Parkit</h1>
+</header>
+<div class="content content-padded">
+
+    <p class="flow-text grey-text text-darken-2" id="hometext">Voer eenvoudig je limiet, plaats en tijd in en betaal niet te veel bij de parkeergarage.
+    </p>   
+
+    <div class="row" id="row_input_home1">
+        <form class="col s12">
+            <div class="row">
+                <div class="input-field col">
+                    <span class="input-label">Limiet &#8364</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col">
+                    <span class="input-label"><i class="mdi-maps-local-parking"></i></span>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="row" id="row_input_home2">
+        <form class="col s12">
+            <div class="row">
+                <div class="input-field col">
+                    <input placeholder="10" id='limietInput' type="tel" class="validate">
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col">
+                    <select id="parkSelect" size="5"></select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="lastrow" class="row">
+        <a id="btn_park" >
+            <button id="buttonPark" class="waves-effect waves-light blue btn disabled" onclick="park()">Parkeer</button>
+        </a>
+    </div>
+</div>
+<div id="dateTimePopup">
+    <div id="popup" class="row">
+        <div class="col s12 m7">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">Te laat?</span>
+                    <p>Ben je vergeten Parkit in stellen? Geef hier aan hoeveel minuten je te laat bent</p>
+                    <div class="row">
+                        <div id="tijdInputContain" class="input-field col">
+                            <input id='tijdInput' type="number" class="validate" placeholder="0 minuten">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button id="buttonPark" class="waves-effect waves-blue btn-flat" onclick="popupClose()">OK</button>
+                    <button id="buttonPark" class="waves-effect waves-blue btn-flat" onclick="popupEmpty()">Annuleer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+<header class="header-bar">
+    <a class="btn-action pull-left mdi-navigation-close" href="#!home"></a>
+    <h1 class="title">Parkit</h1>
+</header>
+<div class="content">
+    <div class="info">
+        <p class="flow-text grey-text text-darken-2" id="overviewtext">De parkeermeter staat nu op: </p>
+        <h2 id="costs" class="thin">&#8364;9,05</h1>
+        <p class="flow-text grey-text text-darken-2" id="overviewtext">Je hebt nog:</p>
+        <h2 id="timeleft" class="thin">05:13</h1>
+    </div>
+    <div class="row buttons">
+        <div id="navknop">
+            <a href="#!navigate" >
+                <button class="btn-floating btn-large waves-effect waves-light pink" onclick="locationGPS(1)">
+                    <i class="mdi-maps-navigation"></i>
+                </button>
+            </a>
+        </div>
+    </div>
+    <div id="labelWrapper">
+        <div id="labels">
+            <div id="limietLabel">
+                <p class="flow-text">Limiet:</p>
+                <div id="limietIngesteld">
+                    <p class="flow-text" id="limietIngesteldVal">&#8364;10.00</p>
+                </div>
+            </div>
+            <div id="parkLabel">
+                <p class="flow-text">Parkeerplaats:</p>
+                <div id="parkPlace">
+                    <p class="flow-text" id="parkPlaceVal">Mathildelaan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
