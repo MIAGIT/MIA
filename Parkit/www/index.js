@@ -200,16 +200,10 @@ function locationGPS(mode) {
         window.plugins.toast.showShortBottom('Positie vastgesteld');
         
         if (mode === 0){
-            latCar=lat;
-            lngCar=lng;
             parkAPI();
             parkAvailable = true;
             document.getElementById('buttonPark').classList.remove('disabled');
-            locationSet = true;
         } else if (mode === 1 && locationSet) {
-            //test co-ords
-            //lat = 52.3762398;
-            //lng = 4.91645;
             document.getElementById('maps').src = "https://www.google.com/maps/embed/v1/directions?key="+ APIkey+ "&origin="+ lat +","+ lng+ "&destination="+ latCar+","+ lngCar+ "&mode=walking";
         } else {
             window.plugins.toast.showLongBottom('Locatie van de auto onbekend!');
@@ -242,18 +236,20 @@ function park() {
             $.getJSON(garageURL).done(function(json) {
                 cost = json.result.meter.costs.cost;
                 costRate = 60;
-                //parkingPrices = cost/costRate;
                 costPerMin = cost / costRate;
-                //alert(parkingPrices);
+                latCar = json.result.meter.lat;
+                lngCar = json.result.meter.lon;
+                locationSet = true;
             });
         } else {
             garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-garage-by-id&id=" + id[index];
             $.getJSON(garageURL).done(function(json) {
                 cost = json.result.garage.price_per_time_unit;
                 costRate = json.result.garage.time_unit_minutes;
-                //parkingPrices = cost / costRate;
                 costPerMin = cost / costRate;
-                //alert(parkingPrices);
+                latCar = json.result.garage.lat;
+                lngCar = json.result.garage.lon;
+                locationSet = true;
             });
         }
 
@@ -348,7 +344,7 @@ function parkAPI() {
         for (i = 0; i < 5; i++) {
             if (json.result.reccommendations[i].name) {isGarage[i] = true;}
             else {isGarage[i] = false;}
-
+            
             if (!isGarage[i]) {
                 parkingPlaces[i] = json.result.reccommendations[i].address;
                 id[i] = json.result.reccommendations[i].automat_number;
