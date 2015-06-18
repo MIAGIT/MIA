@@ -404,7 +404,7 @@ function validateLimiet(val){
         if (match1 != null) return true;
     } 
     catch(e) {
-        alert(e);
+        //alert(e);
     }
 }
 
@@ -422,7 +422,8 @@ function popupOpen() {
 }
 function popupClose() {
     var input = document.getElementById('tijdInput').value;
-    if(validateLimiet(input.toString())) {
+    if(!input){input=0;}
+    if(validateLimiet(input)) {
         document.getElementById('dateTimePopup').style.display = 'none';
     } else {
         window.plugins.toast.showLongBottom('Voer een correct aantal minuten in');
