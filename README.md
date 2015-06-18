@@ -1,10 +1,10 @@
 # ParkIt App for Mobile Interaction
 
 ##Purpose
-A parking assistant that prevents you from paying way more as intented. Set your budget and location, and the app will keep track of how much you have to pay and when you have to be back. This will make sure you stay within budget.
+A parking assistant that prevents you from paying way more as intented. Set your budget and garage, and the app will keep track of how much you have to pay and when you have to be back. This will make sure you stay within budget. The purpose of this is to prevent the user with an unpleasant surprise from unexpected high costs at the parking garage.
 
 ##UI
-The app is built with the Phonon framework with Materialize CSS Framework. The ease-of-use of Phonon and its features make it ideal to work with. The CSS framework implements Material Design and saves a lot of work.
+The app is built with the Phonon framework with Materialize CSS Framework. The ease-of-use of Phonon and its features make it ideal to work with for smaller, less complicated apps. The CSS framework implements Material Design and saves of work.
 
 ##Plugins
 The used plugins are:
@@ -15,24 +15,24 @@ The used plugins are:
 - Background mode
 
 ####Geolocation
-The GPS is used to give the users directions, and can be used to calculate the time it takes to go back to the car. This is used to give the user a heads-up that he/she needs to go back.
+The GPS is used to present the user with the five nearest parkinggarages, provides the navigation with coordinates, and is used to calculate the time it takes to go back to the car. This gives the user a heads-up that he/she needs to go back to stay within the set budget.
 
 ####Vibration
-Temporary used for debugging purposes.
+Used when the app gives a notification.
 
 ####Toast
-Gives the users information about the things happening, and is used in error handling.
+Gives the users information about the things happening (eg determining location), and is used in small error handling.
 
 ####Dialogs
-For the notification, giving the user the option 'OK' or to the navigation.
+For native dialogs to display critical errors or to notify the user he needs to head back.
 
 ##External services
 ####Google Maps
-For navigation purposes
+For navigation purposes. The destination is the garage the user is parked, and the starting point is the users current location.
 
-###Google Distance Matrix
-For determining the time it takes to go back to the car, so the user is warned on time
+####Google Distance Matrix
+For determining the time it takes to go back to the car, so the user is warned on time.
 
 ####divvapi.parkshark
-For displaying the name, so the user can check ir it is correct and to remind the user where his car is parked
-Also used to determine the cost per minute for that particular parkingspot
+This API contains info about all parking in Amsterdam. It is used to find the nearest parking, present the users with the five closest available, and is used to set the parking location. 
+Also used to determine the cost per minute for that particular parkingspot, so the app can calculate how long the user can park within budget.
