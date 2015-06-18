@@ -171,6 +171,9 @@ var locationSet = false;
 var lat;
 var lng;
 var travelTime;
+var gpsRunning = false;
+var gpsTime = 5000;
+var gpsError = 0;
 
 //cost & time vars
 var budget;
@@ -192,9 +195,14 @@ var garageURL;
 
 
 function locationGPS(mode) {
-    window.plugins.toast.showLongBottom('Jouw positie bepalen...');
+    if (mode !== 2) {
+        window.plugins.toast.showLongBottom('Jouw positie bepalen...');
+    }
+    gpsRunning = true;
     
     var onSuccess = function(position) {
+        gpsTime = 5000;
+        gpsError = 0;
         lat = position.coords.latitude;
         lng = position.coords.longitude;
         window.plugins.toast.showShortBottom('Positie vastgesteld');
@@ -211,25 +219,55 @@ function locationGPS(mode) {
     };
 
     function onError(error) {
-        navigator.notification.confirm(
-            'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals', // message
-            GPSError,                   // callback to invoke with index of button pressed
-            'GPS Fout',                                                      	  // title
-            ['OK']                                                         // buttonLabels
-        );
+        gpsTime = 10000;
+        gpsError++;
+        if(gpsError<2 && !locationSet){
+            navigator.notification.confirm(
+                'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals', // message
+                GPSError,     // callback to invoke with index of button pressed
+                'GPS Fout',                                             // title
+                ['OK']                                           // buttonLabels
+            );
+        } else if(!locationSet) {
+            navigator.notification.confirm(
+                'Sta je in een garage? Probeer het buiten nog eens. \n\
+\n\
+Sta je wel buiten, controleer dan of de GPS van de telefoon aan staat',     // message
+                GPSError,     // callback to invoke with index of button pressed
+                'GPS Fout',                                    	        // title
+                ['OK']                                           // buttonLabels
+            );
+        } else if (locationSet && mode === 1) {
+            navigator.notification.confirm(
+                'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals', // message
+                NavError,     // callback to invoke with index of button pressed
+                'GPS Fout',                                             // title
+                ['OK','annuleer']                                           // buttonLabels
+            );
+        } else if(mode === 2){
+            window.plugins.toast.showLongBottom('Kon jouw locatie niet bepalen...');
+        }
     }
-    navigator.geolocation.getCurrentPosition(onSuccess, onError, {enableHighAccuracy: true });
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: gpsTime, enableHighAccuracy: true });
+    gpsRunning = false;
 }
 
 function GPSError(){
     Phonon.Navigator().changePage('home');
+    if(!gpsRunning){locationGPS(0);} //check if it is callexd from homepage, if not run it
+}
+function NavError(buttonIndex) {
+    if(buttonIndex === 1){
+        Phonon.Navigator().changePage('overview');
+    } else {
+        locationGPS(1);
+    }
 }
 
 function park() {
     if (parkAvailable)
     {
         var index = document.getElementById('parkSelect').selectedIndex;
-        //alert(index);
 
         if (!isGarage[index]) {
             garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-meter-by-automat-number&id=" + id[index];
@@ -313,6 +351,7 @@ function overviewUpdate() {
 }
 
 function travelTimeUpdate() {
+    locationGPS(2);
     var timeUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?key="+APIkey+"&origins="
                     +lat+","+lng+"&destinations="+latCar+","+lngCar+"&mode=walking";
 
