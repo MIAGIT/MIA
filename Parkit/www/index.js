@@ -115,7 +115,7 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
         cordova.plugins.backgroundMode.enable();
         overviewUpdate();
         update = true;
-        backEnable = true;
+        backEnable = false;
         document.getElementById('limietIngesteldVal').innerHTML = '&#8364;'+budget;
         document.getElementById('parkPlaceVal').innerHTML = parkingName;
         popupEmpty();
@@ -143,6 +143,7 @@ Phonon.Navigator().on({page: 'navigate', template: 'navigate', asynchronous: fal
 
     activity.onReady(function(self, el, req) {
         locationGPS(1);
+        backEnable = true;
     });
 
     activity.onTransitionEnd(function() {
@@ -157,7 +158,7 @@ Phonon.Navigator().on({page: 'navigate', template: 'navigate', asynchronous: fal
 
 function onBackKeyDown() {
     if (backEnable){
-        Phonon.Navigator().changePage(getPreviousPage());
+        Phonon.Navigator().changePage('overview');
     }
 }
 
@@ -193,6 +194,8 @@ var id = [];
 var isGarage = [];
 var garageURL;
 
+var preventDouble = false;
+
 
 function locationGPS(mode) {
     if (mode !== 2) {
@@ -213,7 +216,7 @@ function locationGPS(mode) {
             document.getElementById('buttonPark').classList.remove('disabled');
         } else if (mode === 1 && locationSet) {
             document.getElementById('maps').src = "https://www.google.com/maps/embed/v1/directions?key="+ APIkey+ "&origin="+ lat +","+ lng+ "&destination="+ latCar+","+ lngCar+ "&mode=walking";
-        } else {
+        } else if (!locationSet){
             window.plugins.toast.showLongBottom('Locatie van de auto onbekend!');
         }
     };
@@ -238,12 +241,15 @@ Sta je wel buiten, controleer dan of de GPS van de telefoon aan staat',     // m
                 ['OK']                                           // buttonLabels
             );
         } else if (locationSet && mode === 1) {
-            navigator.notification.confirm(
-                'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals', // message
-                NavError,     // callback to invoke with index of button pressed
-                'GPS Fout',                                             // title
-                ['OK','annuleer']                                           // buttonLabels
-            );
+            if(!preventDouble) {
+                navigator.notification.confirm(
+                    'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals', // message
+                    NavError,     // callback to invoke with index of button pressed
+                    'GPS Fout',                                             // title
+                    ['OK','annuleer']                                           // buttonLabels
+                );
+                preventDouble = true;
+            }
         } else if(mode === 2){
             window.plugins.toast.showLongBottom('Kon jouw locatie niet bepalen...');
         }
@@ -262,6 +268,7 @@ function NavError(buttonIndex) {
     } else {
         locationGPS(1);
     }
+    preventDouble = false;
 }
 
 function park() {
