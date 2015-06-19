@@ -59,14 +59,14 @@ window.addEventListener('load', function() {
 }, false);
 
 var onDeviceReady = function () {
-    Phonon.Navigator().start('overview');
+    Phonon.Navigator().start('home');
     document.addEventListener("backbutton", onBackKeyDown, false);
 };
 
 document.addEventListener('deviceready', onDeviceReady, false);
 
 Phonon.Navigator({
-    defaultPage: 'overview',
+    defaultPage: 'home',
     templatePath: "tpl",
     pageAnimations: true
 });
@@ -115,7 +115,7 @@ Phonon.Navigator().on({page: 'overview', template: 'overview', asynchronous: fal
         cordova.plugins.backgroundMode.enable();
         overviewUpdate();
         update = true;
-        backEnable = true;
+        backEnable = false;
         document.getElementById('limietIngesteldVal').innerHTML = '&#8364;'+budget;
         document.getElementById('parkPlaceVal').innerHTML = parkingName;
         popupEmpty();
@@ -143,6 +143,7 @@ Phonon.Navigator().on({page: 'navigate', template: 'navigate', asynchronous: fal
 
     activity.onReady(function(self, el, req) {
         locationGPS(1);
+        backEnable = true;
     });
 
     activity.onTransitionEnd(function() {
@@ -157,7 +158,7 @@ Phonon.Navigator().on({page: 'navigate', template: 'navigate', asynchronous: fal
 
 function onBackKeyDown() {
     if (backEnable){
-        Phonon.Navigator().changePage(getPreviousPage());
+        Phonon.Navigator().changePage('overview');
     }
 }
 
@@ -171,6 +172,9 @@ var locationSet = false;
 var lat;
 var lng;
 var travelTime;
+var gpsRunning = false;
+var gpsTime = 5000;
+var gpsError = 0;
 
 //cost & time vars
 var budget;
@@ -190,70 +194,107 @@ var id = [];
 var isGarage = [];
 var garageURL;
 
+var preventDouble = false;
+
 
 function locationGPS(mode) {
-    window.plugins.toast.showLongBottom('Jouw positie bepalen...');
+    if (mode !== 2) {
+        window.plugins.toast.showLongBottom('Jouw positie bepalen...');
+    }
+    gpsRunning = true;
     
     var onSuccess = function(position) {
+        gpsTime = 5000;
+        gpsError = 0;
         lat = position.coords.latitude;
         lng = position.coords.longitude;
         window.plugins.toast.showShortBottom('Positie vastgesteld');
         
         if (mode === 0){
-            latCar=lat;
-            lngCar=lng;
             parkAPI();
             parkAvailable = true;
             document.getElementById('buttonPark').classList.remove('disabled');
-            locationSet = true;
         } else if (mode === 1 && locationSet) {
-            //test co-ords
-            //lat = 52.3762398;
-            //lng = 4.91645;
             document.getElementById('maps').src = "https://www.google.com/maps/embed/v1/directions?key="+ APIkey+ "&origin="+ lat +","+ lng+ "&destination="+ latCar+","+ lngCar+ "&mode=walking";
-        } else {
+        } else if (!locationSet){
             window.plugins.toast.showLongBottom('Locatie van de auto onbekend!');
         }
     };
 
     function onError(error) {
-        navigator.notification.confirm(
-            'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals', // message
-            GPSError,                   // callback to invoke with index of button pressed
-            'GPS Fout',                                                      	  // title
-            ['OK']                                                         // buttonLabels
-        );
+        gpsTime = 10000;
+        gpsError++;
+        if(gpsError<2 && !locationSet){
+            navigator.notification.confirm(
+                'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals', // message
+                GPSError,     // callback to invoke with index of button pressed
+                'GPS Fout',                                             // title
+                ['OK']                                           // buttonLabels
+            );
+        } else if(!locationSet) {
+            navigator.notification.confirm(
+                'Sta je in een garage? Probeer het buiten nog eens. \n\
+\n\
+Sta je wel buiten, controleer dan of de GPS van de telefoon aan staat',     // message
+                GPSError,     // callback to invoke with index of button pressed
+                'GPS Fout',                                    	        // title
+                ['OK']                                           // buttonLabels
+            );
+        } else if (locationSet && mode === 1) {
+            if(!preventDouble) {
+                navigator.notification.confirm(
+                    'Je telefoon kon de locatie niet vastleggen, probeer het nogmaals', // message
+                    NavError,     // callback to invoke with index of button pressed
+                    'GPS Fout',                                             // title
+                    ['OK','annuleer']                                           // buttonLabels
+                );
+                preventDouble = true;
+            }
+        } else if(mode === 2){
+            window.plugins.toast.showLongBottom('Kon jouw locatie niet bepalen...');
+        }
     }
-    navigator.geolocation.getCurrentPosition(onSuccess, onError, {enableHighAccuracy: true });
+    navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: gpsTime, enableHighAccuracy: true });
+    gpsRunning = false;
 }
 
 function GPSError(){
     Phonon.Navigator().changePage('home');
+    if(!gpsRunning){locationGPS(0);} //check if it is callexd from homepage, if not run it
+}
+function NavError(buttonIndex) {
+    if(buttonIndex === 2){
+        Phonon.Navigator().changePage('overview');
+    } else {
+        locationGPS(1);
+    }
+    preventDouble = false;
 }
 
 function park() {
     if (parkAvailable)
     {
         var index = document.getElementById('parkSelect').selectedIndex;
-        //alert(index);
 
         if (!isGarage[index]) {
             garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-meter-by-automat-number&id=" + id[index];
             $.getJSON(garageURL).done(function(json) {
                 cost = json.result.meter.costs.cost;
                 costRate = 60;
-                //parkingPrices = cost/costRate;
                 costPerMin = cost / costRate;
-                //alert(parkingPrices);
+                latCar = json.result.meter.lat;
+                lngCar = json.result.meter.lon;
+                locationSet = true;
             });
         } else {
             garageURL = "http://divvapi.parkshark.nl/apitest.jsp?action=get-garage-by-id&id=" + id[index];
             $.getJSON(garageURL).done(function(json) {
                 cost = json.result.garage.price_per_time_unit;
                 costRate = json.result.garage.time_unit_minutes;
-                //parkingPrices = cost / costRate;
                 costPerMin = cost / costRate;
-                //alert(parkingPrices);
+                latCar = json.result.garage.lat;
+                lngCar = json.result.garage.lon;
+                locationSet = true;
             });
         }
 
@@ -317,6 +358,7 @@ function overviewUpdate() {
 }
 
 function travelTimeUpdate() {
+    locationGPS(2);
     var timeUrl = "https://maps.googleapis.com/maps/api/distancematrix/json?key="+APIkey+"&origins="
                     +lat+","+lng+"&destinations="+latCar+","+lngCar+"&mode=walking";
 
@@ -348,7 +390,7 @@ function parkAPI() {
         for (i = 0; i < 5; i++) {
             if (json.result.reccommendations[i].name) {isGarage[i] = true;}
             else {isGarage[i] = false;}
-
+            
             if (!isGarage[i]) {
                 parkingPlaces[i] = json.result.reccommendations[i].address;
                 id[i] = json.result.reccommendations[i].automat_number;
@@ -408,7 +450,7 @@ function validateLimiet(val){
         if (match1 != null) return true;
     } 
     catch(e) {
-        alert(e);
+        //alert(e);
     }
 }
 
@@ -426,7 +468,8 @@ function popupOpen() {
 }
 function popupClose() {
     var input = document.getElementById('tijdInput').value;
-    if(validateLimiet(input.toString())) {
+    if(!input){input=0;}
+    if(validateLimiet(input)) {
         document.getElementById('dateTimePopup').style.display = 'none';
     } else {
         window.plugins.toast.showLongBottom('Voer een correct aantal minuten in');
