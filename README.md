@@ -1,4 +1,5 @@
 # ParkIt App for Mobile Interaction
+Build with Cordova
 
 ##Purpose
 A parking assistant that prevents you from paying way more as intented. Set your budget and garage, and the app will keep track of how much you have to pay and when you have to be back. This will make sure you stay within budget. The purpose of this is to prevent the user with an unpleasant surprise from unexpected high costs at the parking garage.
