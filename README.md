@@ -4,7 +4,7 @@
 A parking assistant that prevents you from paying way more as intented. Set your budget and garage, and the app will keep track of how much you have to pay and when you have to be back. This will make sure you stay within budget. The purpose of this is to prevent the user with an unpleasant surprise from unexpected high costs at the parking garage.
 
 ##UI
-The app is built with the Phonon framework with Materialize CSS Framework. The ease-of-use of Phonon and its features make it ideal to work with for smaller, less complicated apps. The CSS framework implements Material Design and saves of work.
+The app is built with the Phonon framework with Materialize CSS Framework. The ease-of-use of Phonon and its features make it ideal to work with for smaller, less complicated apps. The CSS framework makes it eaasy and fast to implement Material Design.
 
 ##Plugins
 The used plugins are:
